@@ -13,16 +13,11 @@ class Sheep
 	TOTAL_ENERGY	= 10
 	MOVE_COST	= 1
 	
-	# Determine what direction to move on the grid
-	def calculateMove()
-
-	end
-
 	# Determine what the consequences are of that move
 	# For example, is there grass on that space?
 	# is there a wolf?
-	def evaluateMove()
-
+	def evaluateMoves(options)
+		options.each { |move| p "I can go #{move}" }
 	end
 
 	# Move the sheep to that location on the grid
