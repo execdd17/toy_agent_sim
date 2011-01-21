@@ -1,3 +1,5 @@
+require 'board.rb'
+
 class SimDriver
 
 	def initialize(boardRows=nil,boardColumns=nil)
@@ -42,12 +44,19 @@ class SimDriver
 	end
 
 	def getMoveOptions(row,column,board)
-		options = []
-		
+		options = {}
+
 		# Look UP, DOWN, LEFT, RIGHT and add to array if valid
-		(row-1 < 0			? false : true) ? options << "UP" : nil
-		(row+1 > board[0].length 	? false : true) ? options << "DOWN" : nil
-		(column-1 < 0			? false : true) ? options << "LEFT" : nil
-		(column+1 > board.length	? false : true) ? options << "RIGHT" : nil
+		# NOTE: Think of it as.. Is it illegal? True or False
+		# If False add to hash array if true return nil
+		(row-1 < 0			? true : false) ? nil : options[:UP]    = board[row-1][column]
+		(row+1 > board[0].length 	? true : false) ? nil : options[:DOWN]  = board[row+1][column]
+		(column-1 < 0			? true : false) ? nil : options[:LEFT]  = board[row][column-1]
+		(column+1 > board.length	? true : false) ? nil : options[:RIGHT] = board[row][column+1]
+
+		return options
 	end
-end		
+end	
+
+s = SimDriver.new
+s.runSim	

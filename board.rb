@@ -25,5 +25,6 @@ class Board
 	# Fill in the board based on something
 	def populate()
 		@matrix[0][0] = Sheep.new
+		@matrix[1][1] = Wolf.new
 	end
 end

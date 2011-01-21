@@ -24,7 +24,8 @@ class Wolf
         # For example, is there grass on that space?
         # is there a sheep?
         def evaluateMoves(options)
-		
+		puts "Wolf Movement Options:"
+		options.each { |move| p "I can go #{move}" }	
         end
 
         # Move the wolf to that location on the grid

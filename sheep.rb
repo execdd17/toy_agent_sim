@@ -17,6 +17,7 @@ class Sheep
 	# For example, is there grass on that space?
 	# is there a wolf?
 	def evaluateMoves(options)
+		puts "Sheep Movement Options:"
 		options.each { |move| p "I can go #{move}" }
 	end
 
