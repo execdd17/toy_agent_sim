@@ -18,7 +18,11 @@ class Sheep
 	# is there a wolf?
 	def evaluateMoves(options)
 		puts "Sheep Movement Options:"
-		options.each { |move| p "I can go #{move}" }
+                options.each { |move| p "I can go #{move}" }
+		
+		options.each { |move| return move[0] if not Sheep === move[1] or Wolf === move[1] }
+                return nil
+
 	end
 
 	# Move the sheep to that location on the grid

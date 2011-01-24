@@ -13,12 +13,16 @@ class Wolf
         TOTAL_ENERGY    = 10
         MOVE_COST       = 1
 
-        # Determine what the consequences are of that move
-        # For example, is there grass on that space?
-        # is there a sheep?
-        def evaluateMoves(options)
-		puts "Wolf Movement Options:"
-		options.each { |move| p "I can go #{move}" }	
+        # Determine what move is best. First loop looks for sheep and returns if found
+        # second loop returns anything that isn't another wolf
+        # last return statement handles the case where there is no move to make
+	def evaluateMoves(options)
+		puts "Sheep Movement Options:"
+                options.each { |move| p "I can go #{move}" }
+
+		options.each { |move| return move[0] if Sheep === move[1]}
+		options.each { |move| return move[0] unless Wolf === move[1]}
+		return nil
         end
 
         # Move the wolf to that location on the grid

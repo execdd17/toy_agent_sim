@@ -35,6 +35,7 @@ class SimDriver
 					puts "Sending options for [#{i}][#{j}] : #{@board.matrix[i][j]}"
 					#puts "The options are #{options}"
 					result = calcMoveMeth.call(options)
+					puts "Result is #{result}"
 				else
 					puts "Skipping [#{i}][#{j}]"
 					next
