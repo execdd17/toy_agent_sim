@@ -6,15 +6,8 @@
  Alexander Vanadio
 =end
 class Wolf
-
-	
-	# Constants representing Movement Direction
-	UP 	= 0
-	DOWN	= 1
-	LEFT	= 2
-	RIGHT	= 3
-
-        # The idea of energy might be interesting to implement
+        
+	# The idea of energy might be interesting to implement
         # For now, let's assume that everything cam move if it
         # has the desire to
         TOTAL_ENERGY    = 10

@@ -25,6 +25,19 @@ class Board
 	# Fill in the board based on something
 	def populate()
 		@matrix[0][0] = Sheep.new
-		@matrix[1][1] = Wolf.new
+		@matrix[0][1] = Wolf.new
+	end
+
+	def printBoard()
+		i,j = 0,0
+		puts "=========== Board =========="
+		(i...BOARD_ROWS).each do 
+			(j...BOARD_COLUMNS).each do
+				puts "[#{i}][#{j}] : #{@matrix[i][j]}"
+				j += 1
+			end
+			i += 1
+			j = 0
+		end
 	end
 end
