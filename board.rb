@@ -7,10 +7,10 @@ class Board
 	attr_reader :matrix
 
 	# Default Board Values
-	BOARD_ROWS, BOARD_COLUMNS = 3,3
+	@@BOARD_ROWS, @@BOARD_COLUMNS = 3,3
 
 	# Create the Empty Board
-	def initialize(rows=BOARD_ROWS, cols=BOARD_COLUMNS)
+	def initialize(rows=@@BOARD_ROWS, cols=@@BOARD_COLUMNS)
 		@matrix = []
 
 		# Initialize Board
@@ -20,6 +20,16 @@ class Board
 
 		# Populate The Board with Agents
 		self.populate()
+	end
+
+	# Getter for Class Method	
+	def self.BOARD_ROWS
+		@@BOARD_ROWS
+	end
+	
+	# Getter for Class Method
+	def self.BOARD_COLUMNS
+		@@BOARD_COLUMNS
 	end
 
 	# Fill in the board based on something
@@ -36,9 +46,9 @@ class Board
 		equal = 32
 		puts "=" * equal + " BOARD " + "=" * equal
 		
-		(0..BOARD_ROWS-1).each do |i|
+		(0...@@BOARD_ROWS).each do |i|
 			print "|"
-			(0..BOARD_COLUMNS-1).each do |j|
+			(0...@@BOARD_COLUMNS).each do |j|
 				printf(" %-20s |",@matrix[i][j])
 			end
 			puts

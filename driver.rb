@@ -3,7 +3,6 @@ require 'board.rb'
 class SimDriver
 
   NUM_ROUNDS = 3
-  ROW, COL = 3,3
 
 	def initialize(boardRows=nil,boardColumns=nil)
 		# NOTE: Those parens are critical
@@ -19,8 +18,8 @@ class SimDriver
 
     		(0...NUM_ROUNDS).each do |round|
       			puts "Round #{round}"
-      			(0...ROW).each do |i|
-        			(0...COL).each do |j|
+      			(0...Board.BOARD_ROWS).each do |i|
+        			(0...Board.BOARD_COLUMNS).each do |j|
           				gridObject = @board.matrix[i][j]
 					next if not gridObject 					
  
@@ -63,13 +62,13 @@ class SimDriver
 	# Moves a specified agent to another location then clears its former location	
 	def move(board, row, col, direction)
    
-    return unless direction
+    		return unless direction
     
 		case direction
-			when :UP     then board[row-1][col] = board[row][col]
-			when :DOWN 	 then board[row+1][col] = board[row][col]
-			when :LEFT   then board[row][col-1] = board[row][col]
-			when :RIGHT	 then board[row][col+1] = board[row][col]
+			when :UP	then board[row-1][col] = board[row][col]
+			when :DOWN	then board[row+1][col] = board[row][col]
+			when :LEFT	then board[row][col-1] = board[row][col]
+			when :RIGHT	then board[row][col+1] = board[row][col]
 		end
 
 		board[row][col] = nil
@@ -86,9 +85,9 @@ class SimDriver
 		# I'm indexing into a 2x2 array, for example, so a.length == a[0].length == a[1].length == 2 BUT
 		# I need to see if it's greater than 1, for example, because that is the highest index (not 2)
 		# I could have a just used >= and <= too
-		(row-1 < 0                  ? true : false) ? nil : (options[:UP]    = board[row-1][column])
-		(row+1 > board.length-1	 	  ? true : false) ? nil : (options[:DOWN]  = board[row+1][column])
-		(column-1 < 0			          ? true : false) ? nil : (options[:LEFT]  = board[row][column-1])
+		(row-1 < 0              	? true : false) ? nil : (options[:UP]    = board[row-1][column])
+		(row+1 > board.length-1		? true : false) ? nil : (options[:DOWN]  = board[row+1][column])
+		(column-1 < 0			? true : false) ? nil : (options[:LEFT]  = board[row][column-1])
 		(column+1 > board.length-1	? true : false) ? nil : (options[:RIGHT] = board[row][column+1])
 
 		return options
