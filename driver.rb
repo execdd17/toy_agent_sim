@@ -2,7 +2,7 @@ require 'board.rb'
 
 class SimDriver
 
-  NUM_ROUNDS = 1
+  NUM_ROUNDS = 3
   ROW, COL = 3,3
 
 	def initialize(boardRows=nil,boardColumns=nil)
@@ -18,14 +18,14 @@ class SimDriver
 		processed = []
 
     		(0...NUM_ROUNDS).each do |round|
-      			puts "New Round"
+      			puts "Round #{round}"
       			(0...ROW).each do |i|
         			(0...COL).each do |j|
           				gridObject = @board.matrix[i][j]
 					next if not gridObject 					
  
   					if processed.index(gridObject) then
-  						puts "Already processed [#{gridObject}]"
+  						#puts "Already processed [#{gridObject}]"
   						next
   					else
   						processed << gridObject
@@ -39,7 +39,7 @@ class SimDriver
   						when Sheep, Wolf then gridObject.method(:evaluateMoves)
   					end
  	 
-  					# Make sure we don't invoke a string... ;)
+  					# Make sure we only invoke methods
   					if Method === calcMoveMeth then
   						puts "Sending options for [#{i}][#{j}] : #{@board.matrix[i][j]}"
   						#puts "The options are #{options}"

@@ -17,16 +17,16 @@ class Sheep
 	# For example, is there grass on that space?
 	# is there a wolf?
 	def evaluateMoves(options)
-		puts "Sheep Movement Options:"
-    options.each { |move| p "I can go #{move}" }
+		#puts "Sheep Movement Options:"
+    		#options.each { |move| p "I can go #{move}" }
     
-    sensibleMoves = []
+   		sensibleMoves = []
     
-    # Add moves that will not lead to certain death or occupied by sheep already to array
+    		# Add moves that will not lead to certain death or occupied by sheep already to array
 		options.each { |move| sensibleMoves << move[0] if not Sheep === move[1] and not Wolf === move[1] }
     
-    # Return a random move in the array or nil of array is empty
-    sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
+    		# Return a random move in the array or nil of array is empty
+    		sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
 
 	end
 
