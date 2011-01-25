@@ -8,7 +8,7 @@
 class Wolf
         
 	# The idea of energy might be interesting to implement
-        # For now, let's assume that everything cam move if it
+        # For now, let's assume that everything can move if it
         # has the desire to
         TOTAL_ENERGY    = 10
         MOVE_COST       = 1
@@ -18,12 +18,21 @@ class Wolf
         # last return statement handles the case where there is no move to make
 	def evaluateMoves(options)
 		puts "Wolf Movement Options:"
-                options.each { |move| p "I can go #{move}" }
+    options.each { |move| p "I can go #{move}" }
+    
+    sensibleMoves = []
 
-		options.each { |move| return move[0] if Sheep === move[1]}
-		options.each { |move| return move[0] unless Wolf === move[1]}
-		return nil
-        end
+    # Check if there are any sheep nearby and return one at random if there are some
+		options.each { |move| sensibleMoves << move[0] if Sheep === move[1]}
+    result = sensibleMoves.length == 0 ? nil : sensibleMoves[(rand*100).to_i % sensibleMoves.length]
+    return result if result 
+    
+    # Add moves that will not lead to a spot that is occupied by a wolf already to array
+		options.each { |move| sensibleMoves << move[0] unless Wolf === move[1]}
+    
+    # Return a random move in the array or nil of array is empty
+    sensibleMoves.length == 0 ? nil : sensibleMoves[(rand*100).to_i % sensibleMoves.length]
+  end
 
         # Move the wolf to that location on the grid
         def move(direction)
