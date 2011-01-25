@@ -7,7 +7,7 @@ class Board
 	attr_reader :matrix
 
 	# Default Board Values
-	BOARD_ROWS, BOARD_COLUMNS = 2,2
+	BOARD_ROWS, BOARD_COLUMNS = 3,3
 
 	# Create the Empty Board
 	def initialize(rows=BOARD_ROWS, cols=BOARD_COLUMNS)
@@ -23,8 +23,12 @@ class Board
 	end
 
 	# Fill in the board based on something
-	def populate()
+	def populate()	
 		@matrix[0][0] = Sheep.new
+		@matrix[2][2] = Sheep.new
+		@matrix[1][2] = Sheep.new
+		@matrix[2][0] = Wolf.new
+		@matrix[1][1] = Wolf.new
 		@matrix[0][1] = Wolf.new
 	end
 

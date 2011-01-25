@@ -17,7 +17,7 @@ class Wolf
         # second loop returns anything that isn't another wolf
         # last return statement handles the case where there is no move to make
 	def evaluateMoves(options)
-		puts "Sheep Movement Options:"
+		puts "Wolf Movement Options:"
                 options.each { |move| p "I can go #{move}" }
 
 		options.each { |move| return move[0] if Sheep === move[1]}

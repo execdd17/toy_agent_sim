@@ -16,7 +16,9 @@ class SimDriver
 		@board.matrix.each do |row|
 			row.each do |col|
 
-				if processed.index(col) then 
+				if processed.index(col) then
+					puts "Already processed"
+					puts processed 
 					next
 				else
 					processed << col
@@ -36,6 +38,7 @@ class SimDriver
 					#puts "The options are #{options}"
 					result = calcMoveMeth.call(options)
 					puts "Result is #{result}"
+					move(@board.matrix,i,j,result)
 				else
 					puts "Skipping [#{i}][#{j}]"
 					next
@@ -46,8 +49,21 @@ class SimDriver
 			end
 			i+=1
 		end
+		@board.printBoard
 		processed = []
 		i,j = 0,0
+	end
+
+	# Moves a specified agent to another location then clears its former location	
+	def move(board, row, col, direction)
+		case direction
+			when :UP 	: board[row-1][col] = board[row][col]
+			when :DOWN 	: board[row+1][col] = board[row][col]
+			when :LEFT	: board[row][col-1] = board[row][col]
+			when :RIGHT	: board[row][col+1] = board[row][col]
+		end
+
+		board[row][col] = nil
 	end
 
 	def getMoveOptions(row,column,board)
