@@ -12,64 +12,52 @@ class SimDriver
 		@board.populate()
 	end
 
+	# NOTE: For Ranges, ... is EXCLUSIVE => 0...3 will be 0,1,2
+	# 0..3 is INCLUSIVE => 0,1,2,3
 	def runSim()
 		processed = []
-		i,j = 0,0
-   
 
-    (0...NUM_ROUNDS).each do
-      puts "New Round"
-      (i...ROW).each do
-        (j...COL).each do
-  		#@board.matrix.each do |row|
-  			#row.each do |col|
-          gridObject = @board.matrix[i][j]
-          if not gridObject then
-              j+=1
-              next
-          end
-  
-  				if processed.index(gridObject) then
-  					puts "Already processed [#{gridObject}]"
-            j+=1
-  					next
-  				else
-  					processed << gridObject
+    		(0...NUM_ROUNDS).each do |round|
+      			puts "New Round"
+      			(0...ROW).each do |i|
+        			(0...COL).each do |j|
+          				gridObject = @board.matrix[i][j]
+					next if not gridObject 					
+ 
+  					if processed.index(gridObject) then
+  						puts "Already processed [#{gridObject}]"
+  						next
+  					else
+  						processed << gridObject
+	  				end
+	  			
+  					@board.printBoard
+ 	 
+  					options = getMoveOptions(i,j,@board.matrix)
+  				
+  					calcMoveMeth = case gridObject
+  						when Sheep, Wolf then gridObject.method(:evaluateMoves)
+  					end
+ 	 
+  					# Make sure we don't invoke a string... ;)
+  					if Method === calcMoveMeth then
+  						puts "Sending options for [#{i}][#{j}] : #{@board.matrix[i][j]}"
+  						#puts "The options are #{options}"
+  						result = calcMoveMeth.call(options)
+  						puts "Result is #{result}"
+  						move(@board.matrix,i,j,result)
+  					else
+  						puts "Skipping [#{i}][#{j}]"
+  						next
+  					end
+ 	 
+  					options = nil
   				end
-  			
-  				@board.printBoard
-  
-  				options = getMoveOptions(i,j,@board.matrix)
-  			
-  				calcMoveMeth = case gridObject
-  					when Sheep, Wolf then gridObject.method(:evaluateMoves)
-  				end
-  
-  				# Make sure we don't invoke a string... ;)
-  				if Method === calcMoveMeth then
-  					puts "Sending options for [#{i}][#{j}] : #{@board.matrix[i][j]}"
-  					#puts "The options are #{options}"
-  					result = calcMoveMeth.call(options)
-  					puts "Result is #{result}"
-  					move(@board.matrix,i,j,result)
-  				else
-  					puts "Skipping [#{i}][#{j}]"
-  					next
-  				end
-  
-  				options = nil
-  				j+= 1
   			end
-  			i += 1
-        j  = 0
-  		end
-        @board.printBoard
-        processed = []
-        i = 0
-     end
-      
 
-    
+   			@board.printBoard
+        		processed = []
+     		end
 	end
 
 	# Moves a specified agent to another location then clears its former location	
