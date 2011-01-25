@@ -2,7 +2,7 @@ require 'board.rb'
 
 class SimDriver
 
-  NUM_ROUNDS = 3
+  NUM_ROUNDS = 5
 
 	def initialize(boardRows=nil,boardColumns=nil)
 		# NOTE: Those parens are critical
@@ -52,6 +52,8 @@ class SimDriver
   					end
  	 
   					options = nil
+					print "\e[2J\e[f" #clear screen
+					sleep 1
   				end
   			end
         		processed = []
