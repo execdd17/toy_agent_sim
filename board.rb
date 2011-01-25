@@ -33,15 +33,16 @@ class Board
 	end
 
 	def printBoard()
-		i,j = 0,0
-		puts "=========== Board =========="
-		(i...BOARD_ROWS).each do 
-			(j...BOARD_COLUMNS).each do
-				puts "[#{i}][#{j}] : #{@matrix[i][j]}"
-				j += 1
+		equal = 32
+		puts "=" * equal + " BOARD " + "=" * equal
+		
+		(0..BOARD_ROWS-1).each do |i|
+			print "|"
+			(0..BOARD_COLUMNS-1).each do |j|
+				printf(" %-20s |",@matrix[i][j])
 			end
-			i += 1
-			j = 0
+			puts
 		end
+		puts
 	end
 end
