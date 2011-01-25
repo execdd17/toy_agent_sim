@@ -24,14 +24,14 @@ class Wolf
 
     # Check if there are any sheep nearby and return one at random if there are some
 		options.each { |move| sensibleMoves << move[0] if Sheep === move[1]}
-    result = sensibleMoves.length == 0 ? nil : sensibleMoves[(rand*100).to_i % sensibleMoves.length]
+    result = sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
     return result if result 
     
     # Add moves that will not lead to a spot that is occupied by a wolf already to array
 		options.each { |move| sensibleMoves << move[0] unless Wolf === move[1]}
     
     # Return a random move in the array or nil of array is empty
-    sensibleMoves.length == 0 ? nil : sensibleMoves[(rand*100).to_i % sensibleMoves.length]
+    sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
   end
 
         # Move the wolf to that location on the grid

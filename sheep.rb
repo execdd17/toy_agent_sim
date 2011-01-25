@@ -26,7 +26,7 @@ class Sheep
 		options.each { |move| sensibleMoves << move[0] if not Sheep === move[1] and not Wolf === move[1] }
     
     # Return a random move in the array or nil of array is empty
-    sensibleMoves.length == 0 ? nil : sensibleMoves[(rand*100).to_i % sensibleMoves.length]
+    sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
 
 	end
 

@@ -2,7 +2,8 @@ require 'board.rb'
 
 class SimDriver
 
-  NUM_ROUNDS = 2
+  NUM_ROUNDS = 1
+  ROW, COL = 3,3
 
 	def initialize(boardRows=nil,boardColumns=nil)
 		# NOTE: Those parens are critical
@@ -14,31 +15,34 @@ class SimDriver
 	def runSim()
 		processed = []
 		i,j = 0,0
+   
 
     (0...NUM_ROUNDS).each do
       puts "New Round"
-  		@board.matrix.each do |row|
-  			row.each do |col|
-  
-          if not col then
+      (i...ROW).each do
+        (j...COL).each do
+  		#@board.matrix.each do |row|
+  			#row.each do |col|
+          gridObject = @board.matrix[i][j]
+          if not gridObject then
               j+=1
               next
           end
   
-  				if processed.index(col) then
-  					puts "Already processed"
-  					#puts processed 
+  				if processed.index(gridObject) then
+  					puts "Already processed [#{gridObject}]"
+            j+=1
   					next
   				else
-  					processed << col
+  					processed << gridObject
   				end
   			
   				@board.printBoard
   
   				options = getMoveOptions(i,j,@board.matrix)
   			
-  				calcMoveMeth = case col
-  					when Sheep, Wolf then col.method(:evaluateMoves)
+  				calcMoveMeth = case gridObject
+  					when Sheep, Wolf then gridObject.method(:evaluateMoves)
   				end
   
   				# Make sure we don't invoke a string... ;)
