@@ -3,20 +3,23 @@ require "sheep.rb"
 
 class Board
 
+	# Amount of Sheep or Wolves
+	LOW,MEDIUM,HIGH = 0,1,2
+
 	# Board accessor (reader)
 	attr_reader :matrix
 
 	# Default Board Values
-	@@BOARD_ROWS, @@BOARD_COLUMNS = 3,3
+	@@BOARD_ROWS, @@BOARD_COLUMNS = 5,5
 
 	# Create the Empty Board
-	def initialize(rows=@@BOARD_ROWS, cols=@@BOARD_COLUMNS)
+	def initialize()
 		@matrix = []
 
 		# Initialize Board
 		# NOTE: Array.new(FixNum) creates a nil array with
 		# FixNum elements
-		rows.times { @matrix << Array.new(cols) }
+		@@BOARD_ROWS.times { @matrix << Array.new(@@BOARD_COLUMNS) }
 
 		# Populate The Board with Agents
 		self.populate()
@@ -32,19 +35,57 @@ class Board
 		@@BOARD_COLUMNS
 	end
 
-	# Fill in the board based on something
-	def populate()	
-		@matrix[0][0] = Sheep.new
-		@matrix[2][2] = Sheep.new
-		@matrix[1][2] = Sheep.new
-		@matrix[2][0] = Wolf.new
-		@matrix[1][1] = Wolf.new
-		@matrix[0][1] = Wolf.new
+	# Fill in the board based on user input
+	def populate(sheep=MEDIUM,wolves=LOW)
+		totalGridSize = @@BOARD_ROWS * @@BOARD_COLUMNS
+
+		# calculate the number of sheep
+		numSheep = case sheep
+			when LOW then totalGridSize / 12
+			when MEDIUM then totalGridSize / 6
+			when HIGH then totalGridSize / 3
+		end
+
+		# calculate the number of wolves
+		 numWolves = case wolves
+                        when LOW then totalGridSize / 12
+                        when MEDIUM then totalGridSize / 6
+                        when HIGH then totalGridSize / 3
+		end
+	
+		# make sure we have at least one sheep
+		numSheep == 0 ? numSheep = 1 : nil
+		
+		# make sure w ehave at least one wolf
+		numWolves == 0 ? numWolves = 1 : nil
+
+		# randomly place sheep
+		while numSheep > 0
+			i,j = rand(@@BOARD_ROWS),rand(@@BOARD_COLUMNS)
+
+			# Skip if something is in that spot already
+			next if @matrix[i][j]
+
+			@matrix[i][j] = Sheep.new
+			numSheep -= 1
+		end
+
+		# randomly place wolves	
+		while numWolves > 0
+                        i,j = rand(@@BOARD_ROWS),rand(@@BOARD_COLUMNS)
+
+                        # Skip if something is in that spot already
+                        next if @matrix[i][j]
+                       
+                       @matrix[i][j] = Wolf.new
+                       numWolves -= 1
+		end
 	end
 
 	def printBoard()
-		equal = 32
-		puts "=" * equal + " BOARD " + "=" * equal
+		oneCol = 24
+		totalChars = (oneCol * @@BOARD_COLUMNS) - (@@BOARD_COLUMNS-1)
+		puts "-" * totalChars
 		
 		(0...@@BOARD_ROWS).each do |i|
 			print "|"
@@ -53,6 +94,6 @@ class Board
 			end
 			puts
 		end
-		puts
+		puts "-" * totalChars + "\n\n"
 	end
 end

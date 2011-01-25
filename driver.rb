@@ -7,8 +7,9 @@ class SimDriver
 	def initialize(boardRows=nil,boardColumns=nil)
 		# NOTE: Those parens are critical
 		# The logic changes without them...See if you can spot it
-		@board = (boardRows and boardColumns) ? Board.new(boardRows,BoardColumns) : Board.new()
-		@board.populate()
+		#@board = (boardRows and boardColumns) ? Board.new(boardRows,BoardColumns) : Board.new()
+		
+		@board = Board.new
 	end
 
 	# NOTE: For Ranges, ... is EXCLUSIVE => 0...3 will be 0,1,2
@@ -53,8 +54,6 @@ class SimDriver
   					options = nil
   				end
   			end
-
-   			@board.printBoard
         		processed = []
      		end
 	end
