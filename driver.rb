@@ -44,10 +44,10 @@ class SimDriver
   						puts "Sending options for [#{i}][#{j}] : #{@board.matrix[i][j]}"
   						#puts "The options are #{options}"
   						result = calcMoveMeth.call(options)
-  						puts "Result is #{result}"
+  						#puts "Result is #{result}"
   						move(@board.matrix,i,j,result)
   					else
-  						puts "Skipping [#{i}][#{j}]"
+  						#puts "Skipping [#{i}][#{j}]"
   						next
   					end
  	 
@@ -56,6 +56,7 @@ class SimDriver
 					sleep 1
   				end
   			end
+			@board.growGrass()
         		processed = []
      		end
 	end

@@ -80,8 +80,30 @@ class Board
                        @matrix[i][j] = Wolf.new
                        numWolves -= 1
 		end
+
+		# fill the rest in with grass
+		#(0...@@BOARD_ROWS).each { |i| (0...@@BOARD_COLUMNS).each { |j| @matrix[i][j] = :Grass if not @matrix[i][j] } }
+		self.growGrass()
 	end
 
+	def growGrass()
+		numGrass = 1 + rand(@@BOARD_ROWS*@@BOARD_COLUMNS/3)  # start at 1 vs 0
+		
+		# Keep Putting more grass in the board until there is no room or numGrass is met
+		while numGrass > 0 and self.isSpace?
+			#puts "gET ME OUT of herE!!!"
+			i = rand(@@BOARD_ROWS)
+			j = rand(@@BOARD_COLUMNS)
+			if not @matrix[i][j] then numGrass -= 1 and @matrix[i][j] = :Grass end
+		end
+	end
+
+	# Check if there is space to put the grass
+	def isSpace?()
+		@matrix.each { |list| list.each { |item| if not item then isSpace = true end } }
+	end
+
+	# Nice Text Representation of the entire board 
 	def printBoard()
 		oneCol = 24
 		totalChars = (oneCol * @@BOARD_COLUMNS) - (@@BOARD_COLUMNS-1)
