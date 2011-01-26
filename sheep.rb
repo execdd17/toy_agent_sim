@@ -21,6 +21,11 @@ class Sheep
     		#options.each { |move| p "I can go #{move}" }
     
    		sensibleMoves = []
+
+		# Check if there is  any grass nearby and return one at random if there are some
+		options.each { |move| sensibleMoves << move[0] if :Grass  == move[1]}
+		result = sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
+		return result if result
     
     		# Add moves that will not lead to certain death or occupied by sheep already to array
 		options.each { |move| sensibleMoves << move[0] if not Sheep === move[1] and not Wolf === move[1] }
