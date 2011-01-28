@@ -87,8 +87,13 @@ class Board
 	end
 
 	def growGrass()
-		numGrass = 1 + rand(@@BOARD_ROWS*@@BOARD_COLUMNS/3)  # start at 1 vs 0
-		
+		#numGrass = 1 + rand(@@BOARD_ROWS*@@BOARD_COLUMNS/3)  # start at 1 vs 0
+		emptySpaces = numEmptySpaces()
+
+		# Regen between 2/5 amd 3/5 of the free space with grass
+		numGrass  =  emptySpaces*(2.0/5.0) + rand((2.0/5.0)*emptySpaces)
+    numGrass  = numGrass.to_i
+
 		# Keep Putting more grass in the board until there is no room or numGrass is met
 		while numGrass > 0 and self.isSpace?
 			#puts "gET ME OUT of herE!!!"
@@ -96,6 +101,13 @@ class Board
 			j = rand(@@BOARD_COLUMNS)
 			if not @matrix[i][j] then numGrass -= 1 and @matrix[i][j] = :Grass end
 		end
+	end
+
+	def numEmptySpaces
+		num = 0
+		@matrix.each { |list| list.each { |object| num+=1 if not object } }
+		#puts "There are #{num} blank spaces"
+		num
 	end
 
 	# Check if there is space to put the grass

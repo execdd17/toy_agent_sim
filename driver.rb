@@ -2,7 +2,7 @@ require 'board.rb'
 
 class SimDriver
 
-  NUM_ROUNDS = 5
+  NUM_ROUNDS = 50
 
 	def initialize(boardRows=nil,boardColumns=nil)
 		# NOTE: Those parens are critical
@@ -14,6 +14,10 @@ class SimDriver
 
 	# NOTE: For Ranges, ... is EXCLUSIVE => 0...3 will be 0,1,2
 	# 0..3 is INCLUSIVE => 0,1,2,3
+	# TODO: FIX the BUG where newly spawned agents might have a turn if they are placed 
+	# higher than [i][j]. Either all new agents should get a move or none of them should
+	# it's probably easier to implement none do by storing all the agents in a round and 
+	# then checking to see if the agent you're about to move is in that original list.
 	def runSim()
 		processed = []
 
@@ -31,7 +35,7 @@ class SimDriver
   						processed << gridObject
 	  				end
 	  			
-  					@board.printBoard
+  					#@board.printBoard
  	 
   					options = getMoveOptions(i,j,@board.matrix)
   				
@@ -41,7 +45,7 @@ class SimDriver
  	 
   					# Make sure we only invoke methods
   					if Method === calcMoveMeth then
-  						puts "Sending options for [#{i}][#{j}] : #{@board.matrix[i][j]}"
+  						#puts "Sending options for [#{i}][#{j}] : #{@board.matrix[i][j]}"
   						#puts "The options are #{options}"
   						result = calcMoveMeth.call(options)
   						#puts "Result is #{result}"
@@ -49,13 +53,13 @@ class SimDriver
 						# Check if we should move or delete the object
 						result == :delete ? delete(@board.matrix,i,j) : move(@board.matrix,i,j,result)
 						
-            @board.printBoard
+            					#@board.printBoard
             
 						# Check if the agent is ready to reproduce and handle accordingly
-            # NOTE: It is important to understand that the base spawn address is where
-            # the agent started NOT where it was moved. That doesn't really make sense,
-            # but I didn't bother to address it.
-            # TODO: Fix that...
+            					# NOTE: It is important to understand that the base spawn address is where
+            					# the agent started NOT where it was moved. That doesn't really make sense,
+            					# but I didn't bother to address it.
+            					# TODO: Fix that...
 						spawnAgents(gridObject.class,i,j) if gridObject.method(:readyToReproduce?).call 
             
 						# Decrement the agent's life
@@ -66,10 +70,12 @@ class SimDriver
   					end
  	 
   					options = nil
-					#print "\e[2J\e[f" #clear screen
+					@board.printBoard
+					print "\e[2J\e[f" #clear screen
 					sleep 1
   				end
   			end
+			#@board.printBoard
 			@board.growGrass()
         		processed = []
      		end
@@ -114,7 +120,7 @@ class SimDriver
 
 	# Simple delete method to clear a space on the board
 	def delete(board,i,j)
-		printf("Deleting [%d][%d]\n",i,j)
+		#printf("Deleting [%d][%d]\n",i,j)
 		board[i][j] = nil
 	end
 

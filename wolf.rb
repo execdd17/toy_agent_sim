@@ -10,8 +10,8 @@ class Wolf
 	# The idea of energy might be interesting to implement
         # For now, let's assume that everything can move if it
         # has the desire to
-        TOTAL_LIFE    		= 5
-	REQUIRED_TO_REPRODUCE	= 1
+        TOTAL_LIFE    		= 4
+	REQUIRED_TO_REPRODUCE	= 4
         MOVE_COST       	= 1
 
 	# The amount of life that the wolf currently has. This is decreased whenever an agent is processed
@@ -39,12 +39,13 @@ class Wolf
 
     		# Check if there are any sheep nearby and return one at random if there are some
 		options.each { |move| sensibleMoves << move[0] if Sheep === move[1]}
-    result = sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
+    		result = sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
         
-    if result then
-      @current_consumed += 1
-      return result
-    end
+    		if result then
+      			@current_consumed += 1
+			@current_life += 1	# a little extra surivability
+      			return result
+    		end
     
     		# Add moves that will not lead to a spot that is occupied by a wolf already to array
 		options.each { |move| sensibleMoves << move[0] unless Wolf === move[1]}
