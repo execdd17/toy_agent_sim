@@ -8,11 +8,23 @@
 class Sheep
 
 	# The idea of energy might be interesting to implement
-	# For now, let's assume that everything cam move if it
+	# For now, let's assume that everything can move if it
 	# has the desire to
-	TOTAL_ENERGY	= 10
-	MOVE_COST	= 1
+	TOTAL_LIFE              = 5
+	REQUIRED_TO_REPRODUCE   = 1
+	MOVE_COST               = 1
+
+	# The amount of life that the wolf currently has. This is decreased whenever an agent is processed
+	attr_writer :current_life               
+	attr_reader :current_life
 	
+  def initialize()
+		@current_life = TOTAL_LIFE
+    
+    # The number of sheep eaten by a particular wolf
+    @current_consumed = 0   
+	end
+
 	# Determine what the consequences are of that move
 	# For example, is there grass on that space?
 	# is there a wolf?
@@ -20,12 +32,19 @@ class Sheep
 		#puts "Sheep Movement Options:"
     		#options.each { |move| p "I can go #{move}" }
     
+		# Check to see if the wolf has enough in him to carry on!       
+		return :delete if @current_life == 0
+
    		sensibleMoves = []
 
 		# Check if there is  any grass nearby and return one at random if there are some
 		options.each { |move| sensibleMoves << move[0] if :Grass  == move[1]}
 		result = sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
-		return result if result
+    
+		if result then
+              @current_consumed += 1
+              return result
+    end
     
     		# Add moves that will not lead to certain death or occupied by sheep already to array
 		options.each { |move| sensibleMoves << move[0] if not Sheep === move[1] and not Wolf === move[1] }
@@ -34,6 +53,12 @@ class Sheep
     		sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
 
 	end
+
+  def readyToReproduce?()
+                ready = REQUIRED_TO_REPRODUCE == @current_consumed
+                ready ? (@current_consumed = 0 and true) : false
+  end
+
 
 	# Move the sheep to that location on the grid
 	def move(direction)

@@ -45,20 +45,77 @@ class SimDriver
   						#puts "The options are #{options}"
   						result = calcMoveMeth.call(options)
   						#puts "Result is #{result}"
-  						move(@board.matrix,i,j,result)
+	
+						# Check if we should move or delete the object
+						result == :delete ? delete(@board.matrix,i,j) : move(@board.matrix,i,j,result)
+						
+            @board.printBoard
+            
+						# Check if the agent is ready to reproduce and handle accordingly
+            # NOTE: It is important to understand that the base spawn address is where
+            # the agent started NOT where it was moved. That doesn't really make sense,
+            # but I didn't bother to address it.
+            # TODO: Fix that...
+						spawnAgents(gridObject.class,i,j) if gridObject.method(:readyToReproduce?).call 
+            
+						# Decrement the agent's life
+						gridObject.current_life=(gridObject.current_life-1)
   					else
   						#puts "Skipping [#{i}][#{j}]"
   						next
   					end
  	 
   					options = nil
-					print "\e[2J\e[f" #clear screen
+					#print "\e[2J\e[f" #clear screen
 					sleep 1
   				end
   			end
 			@board.growGrass()
         		processed = []
      		end
+	end
+
+	# In order to spawn new agents of the same type "agent", I call getEmptyLocations 
+	# to determine which nearby cells can be populated with it. 
+	def spawnAgents(agent,row,col)
+    board = @board.matrix 
+		return nil unless nearbyFree = self.getEmptyLocations(row,col,board)
+
+		nearbyFree.each do |direction|
+			case direction
+                        	when :UP        then board[row-1][col] = agent.new
+                        	when :DOWN      then board[row+1][col] = agent.new
+                        	when :LEFT      then board[row][col-1] = agent.new
+                       		when :RIGHT     then board[row][col+1] = agent.new
+			end
+                end
+
+	end
+
+	# This will return a list of directions corresponding to empty cell locations
+	# adjacent to [i][j]. It uses getMoveOptions to eliminate illegal moves, and
+	# then searches through them to eliminate any directions with agents already
+	# in them.
+	def getEmptyLocations(i,j,board)
+		options = getMoveOptions(i,j,board)
+		return nil unless options.length > 0
+
+		spawnLocations = []
+		options.each do |option| 
+			case option[1]
+				when Sheep, Wolf then nil
+				else
+					spawnLocations << option[0]
+			end
+		end
+	
+		return spawnLocations	
+	end
+
+	# Simple delete method to clear a space on the board
+	def delete(board,i,j)
+		printf("Deleting [%d][%d]\n",i,j)
+		board[i][j] = nil
 	end
 
 	# Moves a specified agent to another location then clears its former location	
