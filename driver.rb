@@ -163,14 +163,27 @@ end
 #####################################################################################################################
 # Shoes GUI Section - Creates And Manages all GUI Logic
 #####################################################################################################################
-Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 110), :title => "Wolves and Sheep" do
+Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 110), 
+	:title => "Calm Wolves vs. Nervous Sheep" do
 
 	@rows = Board.BOARD_ROWS
 	@cols = Board.BOARD_COLUMNS
 	@driver = SimDriver.new
 	@board = @driver.board
 	@matrix = @board.matrix
-	
+
+	# Sheep pictures and array to hold them
+	@sheep_left, @sheep_right = "./sheep_left.jpg", "./sheep_right.jpg"
+	@sheep_pics = [@sheep_left, @sheep_right]
+
+	# Wolf pictures and array to hold them
+	@wolf_left, @wolf_right   = "./wolf_left.jpg","./wolf_right.jpg"
+	#@wolf_pics = [@wolf_left, @wolf_right]	
+	@wolf_pics = [@wolf_right]
+
+	# Grass pictures
+	@grass = "./small_grass2.jpg"
+
 	# Sets the background to white
 	background white	
 	
@@ -184,9 +197,9 @@ Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 
                         (0...@cols).each do |col|
                                 s = stack :width => 1.0/Board.BOARD_COLUMNS do
                                         case @matrix[row][col]
-                                        	when Sheep  then (image "/home/tester/Downloads/small_sheep.gif")           
-                                        	when :Grass then (image "/home/tester/Downloads/small_grass.jpg")
-                                        	when Wolf   then (image "/home/tester/Downloads/small_wolf.gif")
+                                        	when Sheep  then (image @sheep_pics[rand(@sheep_pics.length)])           
+                                        	when :Grass then (image @grass)
+                                        	when Wolf   then (image @wolf_pics[rand(@wolf_pics.length)])
                                         end
 				end
 				@slots[row][col] = s
@@ -202,14 +215,14 @@ Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 
 	# Call this routine every (1 second)/(animate argument)
 	# It will go through all the slots over and over again redrawing the background based on the matrix
 	# This is not very efficient because we are probably making a lot of updates on unchanged data....
-	animate(5) do |frame|
+	animate(3) do |frame|
 		(0...@rows).each do |row|
 			(0...@cols).each do |col|	#col represents a stack
 				#puts "[#{row}] [#{col}] : #{@matrix[row][col]}"
 				case @matrix[row][col]
-					when Sheep  then @slots[row][col].clear { (image "/home/tester/Downloads/small_sheep2.jpg") }
-					when :Grass then @slots[row][col].clear { (image "/home/tester/Downloads/small_grass.jpg") }
-					when Wolf   then @slots[row][col].clear { (image "/home/tester/Downloads/small_wolf.gif")  }
+					when Sheep  then @slots[row][col].clear { (image @sheep_pics[rand(@sheep_pics.length)]) }
+					when :Grass then @slots[row][col].clear { (image @grass) }
+					when Wolf   then @slots[row][col].clear { (image @wolf_pics[rand(@wolf_pics.length)])  }
 					when nil    then @slots[row][col].clear
 				end
 			end
