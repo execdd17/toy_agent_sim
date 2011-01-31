@@ -10,7 +10,7 @@ class Board
 	attr_reader :matrix
 
 	# Default Board Values
-	@@BOARD_ROWS, @@BOARD_COLUMNS = 6,6
+	@@BOARD_ROWS, @@BOARD_COLUMNS = 5,5
 
 	# Create the Empty Board
 	def initialize()

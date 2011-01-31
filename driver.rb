@@ -2,7 +2,8 @@ require 'board.rb'
 
 class SimDriver
 
-  NUM_ROUNDS = 50
+  NUM_ROUNDS = 500
+  attr_reader :board
 
 	def initialize(boardRows=nil,boardColumns=nil)
 		# NOTE: Those parens are critical
@@ -70,9 +71,9 @@ class SimDriver
   					end
  	 
   					options = nil
-					@board.printBoard
-					print "\e[2J\e[f" #clear screen
-					sleep 1
+					#@board.printBoard
+					#print "\e[2J\e[f" #clear screen
+					#sleep(0.65)
   				end
   			end
 			#@board.printBoard
@@ -84,7 +85,7 @@ class SimDriver
 	# In order to spawn new agents of the same type "agent", I call getEmptyLocations 
 	# to determine which nearby cells can be populated with it. 
 	def spawnAgents(agent,row,col)
-    board = @board.matrix 
+    		board = @board.matrix 
 		return nil unless nearbyFree = self.getEmptyLocations(row,col,board)
 
 		nearbyFree.each do |direction|
@@ -159,5 +160,30 @@ class SimDriver
 	end
 end	
 
-s = SimDriver.new
-s.runSim
+Shoes.app :width => 925, :height => 550 do
+
+	@rows = Board.BOARD_ROWS
+	@cols = Board.BOARD_COLUMNS
+	
+	background white
+	
+	@driver = SimDriver.new
+	@board = @driver.board
+	@matrix = @board.matrix
+
+        (0...@rows).each do |row|
+                flow :width => 1000, :margin => 10 do
+                        (0...@cols).each do |col|
+                                stack :width => 1.0/Board.BOARD_COLUMNS do
+                                        #para "[#{row}] [#{col}]"
+                                        case @matrix[row][col]
+                                        	when Sheep  then (image "/home/tester/Downloads/small_sheep.gif")           
+                                        	when :Grass then (image "/home/tester/Downloads/small_grass.jpg")
+                                        	when Wolf   then (image "/home/tester/Downloads/small_wolf.gif")
+                                        end
+				end
+			end
+		end
+	end
+end
+                                        
