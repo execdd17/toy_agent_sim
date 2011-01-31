@@ -2,7 +2,7 @@ require 'board.rb'
 
 class SimDriver
 
-  NUM_ROUNDS = 500
+  NUM_ROUNDS = 100
   attr_reader :board
 
 	def initialize(boardRows=nil,boardColumns=nil)
@@ -73,7 +73,7 @@ class SimDriver
   					options = nil
 					#@board.printBoard
 					#print "\e[2J\e[f" #clear screen
-					#sleep(0.65)
+					sleep(0.25)
   				end
   			end
 			#@board.printBoard
@@ -160,27 +160,57 @@ class SimDriver
 	end
 end	
 
-Shoes.app :width => 925, :height => 550 do
+#####################################################################################################################
+# Shoes GUI Section - Creates And Manages all GUI Logic
+#####################################################################################################################
+Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 110), :title => "Wolves and Sheep" do
 
 	@rows = Board.BOARD_ROWS
 	@cols = Board.BOARD_COLUMNS
-	
-	background white
-	
 	@driver = SimDriver.new
 	@board = @driver.board
 	@matrix = @board.matrix
+	
+	# Sets the background to white
+	background white	
+	
+	# This 2-D Array represents all the flows and stacks that map naturally to the matrix
+	@slots = []
+	@rows.times { @slots << Array.new(@cols) }
 
+	# Do the initialize drawing on the board and crate the slot array that we will loop through later
         (0...@rows).each do |row|
-                flow :width => 1000, :margin => 10 do
+		f = flow :width => (Board.BOARD_COLUMNS * 155), :margin => 10 do
                         (0...@cols).each do |col|
-                                stack :width => 1.0/Board.BOARD_COLUMNS do
-                                        #para "[#{row}] [#{col}]"
+                                s = stack :width => 1.0/Board.BOARD_COLUMNS do
                                         case @matrix[row][col]
                                         	when Sheep  then (image "/home/tester/Downloads/small_sheep.gif")           
                                         	when :Grass then (image "/home/tester/Downloads/small_grass.jpg")
                                         	when Wolf   then (image "/home/tester/Downloads/small_wolf.gif")
                                         end
+				end
+				@slots[row][col] = s
+			end
+		end
+	end
+
+	# Call the driver in a new thread so we don't have to wait for it to finish executing (which defeats the whole purpose)
+	Thread.new {
+		@driver.runSim
+	}
+
+	# Call this routine every (1 second)/(animate argument)
+	# It will go through all the slots over and over again redrawing the background based on the matrix
+	# This is not very efficient because we are probably making a lot of updates on unchanged data....
+	animate(5) do |frame|
+		(0...@rows).each do |row|
+			(0...@cols).each do |col|	#col represents a stack
+				#puts "[#{row}] [#{col}] : #{@matrix[row][col]}"
+				case @matrix[row][col]
+					when Sheep  then @slots[row][col].clear { (image "/home/tester/Downloads/small_sheep2.jpg") }
+					when :Grass then @slots[row][col].clear { (image "/home/tester/Downloads/small_grass.jpg") }
+					when Wolf   then @slots[row][col].clear { (image "/home/tester/Downloads/small_wolf.gif")  }
+					when nil    then @slots[row][col].clear
 				end
 			end
 		end
