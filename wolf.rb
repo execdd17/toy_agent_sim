@@ -18,11 +18,20 @@ class Wolf
 	attr_writer :current_life
 	attr_reader :current_life
 
-  # NOTE: For some reason I can't declare @current_consumed above this. It never gets initialized apparently...
+	# Indicator of when animation should be done (when the wolf eats a sheep)
+	attr_writer :animate
+
+  	# NOTE: For some reason I can't declare @current_consumed above this. It never gets initialized apparently...
 	def initialize()
 		@current_life = TOTAL_LIFE
-    # The number of sheep eaten by a particular wolf
-    @current_consumed = 0
+    		# The number of sheep eaten by a particular wolf
+    		@current_consumed = 0
+		@animate = false
+	end
+
+	# True or False if it's ready to animate the wolf eating the sheep
+	def animate?
+		return @animate
 	end
 
         # Determine what move is best. First loop looks for sheep and returns if found
@@ -44,6 +53,7 @@ class Wolf
     		if result then
       			@current_consumed += 1
 			@current_life += 1	# a little extra surivability
+			@animate = true
       			return result
     		end
     

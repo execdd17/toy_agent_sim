@@ -1,4 +1,5 @@
 require 'board.rb'
+require 'thread'
 
 class SimDriver
 
@@ -184,12 +185,18 @@ Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 
 	# Grass pictures
 	@grass = "./small_grass2.jpg"
 
-	# Sets the background to white
-	background white	
+	# Taz pics used for when a wolf eats a sheep
+	@taz1,@taz2 = "./taz1.jpg", "./taz2.jpg"
+
+	# Thread Mutex
+	@semaphore = Mutex.new
 	
 	# This 2-D Array represents all the flows and stacks that map naturally to the matrix
 	@slots = []
 	@rows.times { @slots << Array.new(@cols) }
+	
+	# Sets the background to white
+	background white		
 
 	# Do the initialize drawing on the board and crate the slot array that we will loop through later
         (0...@rows).each do |row|
@@ -212,18 +219,48 @@ Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 
 		@driver.runSim
 	}
 
+
 	# Call this routine every (1 second)/(animate argument)
 	# It will go through all the slots over and over again redrawing the background based on the matrix
 	# This is not very efficient because we are probably making a lot of updates on unchanged data....
-	animate(3) do |frame|
+	# NOTE: The mutex seems to cause less screen gitters
+	animate(4) do |frame|
 		(0...@rows).each do |row|
 			(0...@cols).each do |col|	#col represents a stack
 				#puts "[#{row}] [#{col}] : #{@matrix[row][col]}"
-				case @matrix[row][col]
-					when Sheep  then @slots[row][col].clear { (image @sheep_pics[rand(@sheep_pics.length)]) }
-					when :Grass then @slots[row][col].clear { (image @grass) }
-					when Wolf   then @slots[row][col].clear { (image @wolf_pics[rand(@wolf_pics.length)])  }
-					when nil    then @slots[row][col].clear
+				gridObject = @matrix[row][col]
+				case gridObject
+					when nil    then 
+						@semaphore.synchronize {
+							@slots[row][col].clear
+						}
+					when :Grass then 
+						@semaphore.synchronize {
+							@slots[row][col].clear { (image @grass) }
+						}
+					when Sheep  then 
+						@semaphore.synchronize {
+							@slots[row][col].clear { (image @sheep_pics[rand(@sheep_pics.length)]) }
+						}
+					when Wolf   then 
+						if gridObject.animate? then
+							Thread.new {
+								(0...2).each do
+									@semaphore.synchronize { 
+										@slots[row][col].clear { (image @taz1) }
+									}
+									sleep 0.20
+									@semaphore.synchronize {
+										@slots[row][col].clear { (image @taz2) } 
+									}
+								end
+							}
+							gridObject.animate=false
+						else
+							@semaphore.synchronize { 
+								@slots[row][col].clear { (image @wolf_pics[rand(@wolf_pics.length)])  }
+							}
+						end
 				end
 			end
 		end
