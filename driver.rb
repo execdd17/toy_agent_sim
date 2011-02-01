@@ -188,6 +188,9 @@ Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 
 	# Taz pics used for when a wolf eats a sheep
 	@taz1,@taz2 = "./taz1.jpg", "./taz2.jpg"
 
+	# Cartoon pictures of the desert
+	@desert = "./desert.jpg"
+
 	# Thread Mutex
 	@semaphore = Mutex.new
 	
@@ -207,6 +210,7 @@ Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 
                                         	when Sheep  then (image @sheep_pics[rand(@sheep_pics.length)])           
                                         	when :Grass then (image @grass)
                                         	when Wolf   then (image @wolf_pics[rand(@wolf_pics.length)])
+						when nil    then (image @desert)
                                         end
 				end
 				@slots[row][col] = s
@@ -232,7 +236,7 @@ Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 
 				case gridObject
 					when nil    then 
 						@semaphore.synchronize {
-							@slots[row][col].clear
+							@slots[row][col].clear { (image @desert) }
 						}
 					when :Grass then 
 						@semaphore.synchronize {

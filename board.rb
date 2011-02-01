@@ -91,7 +91,7 @@ class Board
 		emptySpaces = numEmptySpaces()
 
 		# Regen between 2/5 amd 3/5 of the free space with grass
-		numGrass  =  emptySpaces*(2.0/5.0) + rand((2.0/5.0)*emptySpaces)
+		numGrass  =  emptySpaces*(1.0/5.0) + rand((2.0/5.0)*emptySpaces)
     numGrass  = numGrass.to_i
 
 		# Keep Putting more grass in the board until there is no room or numGrass is met
