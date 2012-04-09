@@ -1,4 +1,6 @@
-require 'board.rb'
+#!/usr/bin/env ruby
+
+require './board.rb'
 require 'thread'
 
 class SimDriver

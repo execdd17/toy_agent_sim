@@ -1,5 +1,5 @@
-require "wolf.rb"
-require "sheep.rb"
+require "./wolf.rb"
+require "./sheep.rb"
 
 class Board
 
@@ -41,16 +41,16 @@ class Board
 
 		# calculate the number of sheep
 		numSheep = case sheep
-			when LOW then totalGridSize / 12
+			when LOW    then totalGridSize / 12
 			when MEDIUM then totalGridSize / 6
-			when HIGH then totalGridSize / 3
+			when HIGH   then totalGridSize / 3
 		end
 
 		# calculate the number of wolves
-		 numWolves = case wolves
-                        when LOW then totalGridSize / 12
-                        when MEDIUM then totalGridSize / 6
-                        when HIGH then totalGridSize / 3
+    numWolves = case wolves
+      when LOW    then totalGridSize / 12
+      when MEDIUM then totalGridSize / 6
+      when HIGH   then totalGridSize / 3
 		end
 	
 		# make sure we have at least one sheep
@@ -72,18 +72,16 @@ class Board
 
 		# randomly place wolves	
 		while numWolves > 0
-                        i,j = rand(@@BOARD_ROWS),rand(@@BOARD_COLUMNS)
+      i,j = rand(@@BOARD_ROWS),rand(@@BOARD_COLUMNS)
 
-                        # Skip if something is in that spot already
-                        next if @matrix[i][j]
+      # Skip if something is in that spot already
+      next if @matrix[i][j]
                        
-                       @matrix[i][j] = Wolf.new
-                       numWolves -= 1
+      @matrix[i][j] = Wolf.new
+      numWolves -= 1
 		end
-
-		# fill the rest in with grass
-		#(0...@@BOARD_ROWS).each { |i| (0...@@BOARD_COLUMNS).each { |j| @matrix[i][j] = :Grass if not @matrix[i][j] } }
-		self.growGrass()
+		
+    self.growGrass()
 	end
 
 	def growGrass()
@@ -99,14 +97,13 @@ class Board
 			#puts "gET ME OUT of herE!!!"
 			i = rand(@@BOARD_ROWS)
 			j = rand(@@BOARD_COLUMNS)
-			if not @matrix[i][j] then numGrass -= 1 and @matrix[i][j] = :Grass end
+			numGrass -= 1 and @matrix[i][j] = :Grass unless @matrix[i][j]
 		end
 	end
 
 	def numEmptySpaces
 		num = 0
 		@matrix.each { |list| list.each { |object| num+=1 if not object } }
-		#puts "There are #{num} blank spaces"
 		num
 	end
 
