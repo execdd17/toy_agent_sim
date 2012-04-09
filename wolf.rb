@@ -8,24 +8,25 @@
 class Wolf
         
 	# The idea of energy might be interesting to implement
-        # For now, let's assume that everything can move if it
-        # has the desire to
-        TOTAL_LIFE    		= 4
+  # For now, let's assume that everything can move if it
+  # has the desire to
+  TOTAL_LIFE    		    = 4
 	REQUIRED_TO_REPRODUCE	= 4
-        MOVE_COST       	= 1
+  MOVE_COST       	    = 1
 
-	# The amount of life that the wolf currently has. This is decreased whenever an agent is processed
-	attr_writer :current_life
-	attr_reader :current_life
+	# The amount of life that the wolf currently has. This is decreased 
+  # whenever an agent is processed
+	attr_accessor :current_life
 
 	# Indicator of when animation should be done (when the wolf eats a sheep)
 	attr_writer :animate
 
-  	# NOTE: For some reason I can't declare @current_consumed above this. It never gets initialized apparently...
+  # NOTE: For some reason I can't declare @current_consumed above this. 
+  # It never gets initialized apparently...
 	def initialize()
 		@current_life = TOTAL_LIFE
-    		# The number of sheep eaten by a particular wolf
-    		@current_consumed = 0
+    # The number of sheep eaten by a particular wolf
+    @current_consumed = 0
 		@animate = false
 	end
 
@@ -34,43 +35,38 @@ class Wolf
 		return @animate
 	end
 
-        # Determine what move is best. First loop looks for sheep and returns if found
-        # second loop returns anything that isn't another wolf
-        # last return statement handles the case where there is no move to make
+  # Determine what move is best. First loop looks for sheep and returns if found
+  # second loop returns anything that isn't another wolf
+  # last return statement handles the case where there is no move to make
 	def evaluateMoves(options)
-		#puts "Wolf Movement Options:"
-    		#options.each { |move| p "I can go #{move}" }
+	  #puts "Wolf Movement Options:"
+    #options.each { |move| p "I can go #{move}" }
    	
 		# Check to see if the wolf has enough in him to carry on!	
 		return :delete if @current_life == 0
 		 
-    		sensibleMoves = []
+    sensibleMoves = []
 
-    		# Check if there are any sheep nearby and return one at random if there are some
+    # Check if there are any sheep nearby and return one at random if there are some
 		options.each { |move| sensibleMoves << move[0] if Sheep === move[1]}
-    		result = sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
+    result = sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
         
-    		if result then
-      			@current_consumed += 1
+    if result then
+      @current_consumed += 1
 			@current_life += 1	# a little extra surivability
 			@animate = true
-      			return result
-    		end
+      return result
+    end
     
-    		# Add moves that will not lead to a spot that is occupied by a wolf already to array
+    # Add moves that will not lead to a spot that is occupied by a wolf already to array
 		options.each { |move| sensibleMoves << move[0] unless Wolf === move[1]}
     
-    		# Return a random move in the array or nil of array is empty
-    		sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
-  	end
+    # Return a random move in the array or nil of array is empty
+    sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
+  end
 
 	def readyToReproduce?()
 		ready = REQUIRED_TO_REPRODUCE == @current_consumed
 		ready ? (@current_consumed = 0 and true) : false
 	end
-
-        # Move the wolf to that location on the grid
-        def move(direction)
-
-        end
 end
