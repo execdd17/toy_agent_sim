@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 require './board.rb'
 require 'thread'
 
@@ -133,8 +131,8 @@ class SimDriver
 		# I'm indexing into a 2x2 array, for example, so a.length == a[0].length == a[1].length == 2 BUT
 		# I need to see if it's greater than 1, for example, because that is the highest index (not 2)
 		# I could have a just used >= and <= too
-		(row-1 < 0              	  ? true : false) ? nil : (options[:UP]    = board[row-1][column])
-		(row+1 > board.length-1		  ? true : false) ? nil : (options[:DOWN]  = board[row+1][column])
+		(row-1    < 0              	? true : false) ? nil : (options[:UP]    = board[row-1][column])
+		(row+1    > board.length-1  ? true : false) ? nil : (options[:DOWN]  = board[row+1][column])
 		(column-1 < 0			          ? true : false) ? nil : (options[:LEFT]  = board[row][column-1])
 		(column+1 > board.length-1	? true : false) ? nil : (options[:RIGHT] = board[row][column+1])
 
@@ -145,28 +143,31 @@ end
 #####################################################################################################################
 # Shoes GUI Section - Creates And Manages all GUI Logic
 #####################################################################################################################
-Shoes.app :width => (Board::BOARD_COLUMNS * 155), :height => (Board::BOARD_ROWS * 110),
-	:title => "Calm Wolves vs. Nervous Sheep" do
+Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
+          :height => (Board::BOARD_ROWS * 110),
+          :title  => "Calm Wolves vs. Nervous Sheep" do
 
 	@driver = SimDriver.new
 	@matrix = @driver.board.matrix
 
+  image_base = "images/"
+
 	# Sheep pictures and array to hold them
-	sheep_left, sheep_right = "./sheep_left.jpg", "./sheep_right.jpg"
+	sheep_left, sheep_right = image_base + "sheep_left.jpg", image_base + "sheep_right.jpg"
 	@sheep_pics = [sheep_left, sheep_right]
 
 	# Wolf pictures and array to hold them
-	wolf_left, wolf_right   = "./wolf_left.jpg","./wolf_right.jpg"
+	wolf_left, wolf_right   = image_base + "wolf_left.jpg", image_base + "wolf_right.jpg"
 	@wolf_pics = [wolf_right]   # only using one pic for this (change if desired)
 
 	# Grass pictures
-	@grass = "./small_grass2.jpg"
+	@grass = image_base + "small_grass2.jpg"
 
 	# Taz pics used for when a wolf eats a sheep
-	@taz1,@taz2 = "./taz1.jpg", "./taz2.jpg"
+	@taz1,@taz2 = image_base + "taz1.jpg", image_base + "taz2.jpg"
 
 	# Cartoon pictures of the desert
-	@desert = "./desert.jpg"
+	@desert = image_base + "desert.jpg"
 
 	# Thread Mutex
 	@semaphore = Mutex.new
@@ -175,8 +176,7 @@ Shoes.app :width => (Board::BOARD_COLUMNS * 155), :height => (Board::BOARD_ROWS 
 	@slots = []
   Board::BOARD_ROWS.times { @slots << Array.new(Board::BOARD_COLUMNS) }
 	
-	# Sets the background to white
-	background white		
+	background white
 
 	# Do the initialize drawing on the board and crate the slot array that we will loop through later
   (0...Board::BOARD_ROWS).each do |row|
@@ -197,9 +197,7 @@ Shoes.app :width => (Board::BOARD_COLUMNS * 155), :height => (Board::BOARD_ROWS 
 	end
 
 	# Call the driver in a new thread so we don't have to wait for it to finish executing (which defeats the whole purpose)
-	Thread.new {
-		@driver.runSim
-	}
+	Thread.new { @driver.runSim }
 
 	# Call this routine every (1 second)/(animate argument)
 	# It will go through all the slots over and over again redrawing the background based on the matrix
