@@ -9,16 +9,10 @@ class SimDriver
   attr_reader :board
 
 	def initialize(boardRows=nil,boardColumns=nil)
-		# NOTE: Those parens are critical
-		# The logic changes without them...See if you can spot it
-		#@board = (boardRows and boardColumns) ? Board.new(boardRows,BoardColumns) : Board.new()
-		
 		@board = Board.new
 	end
 
-	# NOTE: For Ranges, ... is EXCLUSIVE => 0...3 will be 0,1,2
-	# 0..3 is INCLUSIVE => 0,1,2,3
-	# TODO: FIX the BUG where newly spawned agents might have a turn if they are placed 
+	# TODO: FIX the BUG where newly spawned agents might have a turn if they are placed
 	# higher than [i][j]. Either all new agents should get a move or none of them should
 	# it's probably easier to implement none do by storing all the agents in a round and 
 	# then checking to see if the agent you're about to move is in that original list.
@@ -27,8 +21,8 @@ class SimDriver
 
     		(0...NUM_ROUNDS).each do |round|
       			puts "Round #{round}"
-      			(0...Board.BOARD_ROWS).each do |i|
-        			(0...Board.BOARD_COLUMNS).each do |j|
+      			(0...Board::BOARD_ROWS).each do |i|
+        			(0...Board::BOARD_COLUMNS).each do |j|
           				gridObject = @board.matrix[i][j]
 					next if not gridObject 					
  
@@ -166,23 +160,22 @@ end
 #####################################################################################################################
 # Shoes GUI Section - Creates And Manages all GUI Logic
 #####################################################################################################################
-Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 110), 
+Shoes.app :width => (Board::BOARD_COLUMNS * 155), :height => (Board::BOARD_ROWS * 110),
 	:title => "Calm Wolves vs. Nervous Sheep" do
 
-	@rows = Board.BOARD_ROWS
-	@cols = Board.BOARD_COLUMNS
+	@rows = Board::BOARD_ROWS
+	@cols = Board::BOARD_COLUMNS
 	@driver = SimDriver.new
 	@board = @driver.board
 	@matrix = @board.matrix
 
 	# Sheep pictures and array to hold them
-	@sheep_left, @sheep_right = "./sheep_left.jpg", "./sheep_right.jpg"
-	@sheep_pics = [@sheep_left, @sheep_right]
+	sheep_left, sheep_right = "./sheep_left.jpg", "./sheep_right.jpg"
+	@sheep_pics = [sheep_left, sheep_right]
 
 	# Wolf pictures and array to hold them
-	@wolf_left, @wolf_right   = "./wolf_left.jpg","./wolf_right.jpg"
-	#@wolf_pics = [@wolf_left, @wolf_right]	
-	@wolf_pics = [@wolf_right]
+	wolf_left, wolf_right   = "./wolf_left.jpg","./wolf_right.jpg"
+	@wolf_pics = [wolf_right]   # only using one pic for this (change if desired)
 
 	# Grass pictures
 	@grass = "./small_grass2.jpg"
@@ -205,9 +198,9 @@ Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 
 
 	# Do the initialize drawing on the board and crate the slot array that we will loop through later
         (0...@rows).each do |row|
-		f = flow :width => (Board.BOARD_COLUMNS * 155), :margin => 10 do
+		flow :width => (Board::BOARD_COLUMNS * 155), :margin => 10 do
                         (0...@cols).each do |col|
-                                s = stack :width => 1.0/Board.BOARD_COLUMNS do
+                                s = stack :width => 1.0/Board::BOARD_COLUMNS do
                                         case @matrix[row][col]
                                         	when Sheep  then (image @sheep_pics[rand(@sheep_pics.length)])           
                                         	when :Grass then (image @grass)
@@ -225,7 +218,6 @@ Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 
 		@driver.runSim
 	}
 
-
 	# Call this routine every (1 second)/(animate argument)
 	# It will go through all the slots over and over again redrawing the background based on the matrix
 	# This is not very efficient because we are probably making a lot of updates on unchanged data....
@@ -233,7 +225,6 @@ Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 
 	animate(4) do |frame|
 		(0...@rows).each do |row|
 			(0...@cols).each do |col|	#col represents a stack
-				#puts "[#{row}] [#{col}] : #{@matrix[row][col]}"
 				gridObject = @matrix[row][col]
 				case gridObject
 					when nil    then 
@@ -272,4 +263,3 @@ Shoes.app :width => (Board.BOARD_COLUMNS * 155), :height => (Board.BOARD_ROWS * 
 		end
 	end
 end
-                                        
