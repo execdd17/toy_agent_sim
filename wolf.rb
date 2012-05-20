@@ -21,16 +21,13 @@ class Wolf
 	# Indicator of when animation should be done (when the wolf eats a sheep)
 	attr_writer :animate
 
-  # NOTE: For some reason I can't declare @current_consumed above this. 
-  # It never gets initialized apparently...
 	def initialize()
 		@current_life = TOTAL_LIFE
-    # The number of sheep eaten by a particular wolf
-    @current_consumed = 0
+    @current_consumed = 0   #the number of sheep eaten by a particular wolf
 		@animate = false
 	end
 
-	# True or False if it's ready to animate the wolf eating the sheep
+	# if it's ready to animate the wolf eating the sheep
 	def animate?
 		return @animate
 	end
@@ -39,30 +36,28 @@ class Wolf
   # second loop returns anything that isn't another wolf
   # last return statement handles the case where there is no move to make
 	def evaluateMoves(options)
-	  #puts "Wolf Movement Options:"
-    #options.each { |move| p "I can go #{move}" }
    	
 		# Check to see if the wolf has enough in him to carry on!	
 		return :delete if @current_life == 0
 		 
-    sensibleMoves = []
+    sensible_moves = []
 
     # Check if there are any sheep nearby and return one at random if there are some
-		options.each { |move| sensibleMoves << move[0] if Sheep === move[1]}
-    result = sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
+		options.each { |move| sensible_moves << move[0] if Sheep === move[1]}
+    result = sensible_moves.length == 0 ? nil : sensible_moves[rand(sensible_moves.length)]
         
     if result then
       @current_consumed += 1
-			@current_life += 1	# a little extra surivability
+			@current_life += 1	# a little extra survivability
 			@animate = true
       return result
     end
     
     # Add moves that will not lead to a spot that is occupied by a wolf already to array
-		options.each { |move| sensibleMoves << move[0] unless Wolf === move[1]}
+		options.each { |move| sensible_moves << move[0] unless Wolf === move[1]}
     
     # Return a random move in the array or nil of array is empty
-    sensibleMoves.length == 0 ? nil : sensibleMoves[rand(sensibleMoves.length)]
+    sensible_moves.length == 0 ? nil : sensible_moves[rand(sensible_moves.length)]
   end
 
 	def readyToReproduce?()
