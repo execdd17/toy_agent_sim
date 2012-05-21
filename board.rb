@@ -7,7 +7,7 @@ class Board
 	LOW,MEDIUM,HIGH = 0,1,2
 
   # Default Board Values
-  BOARD_ROWS, BOARD_COLUMNS = 10,10
+  BOARD_ROWS, BOARD_COLUMNS = 7,7
 
 	# Board accessor (reader)
 	attr_reader :matrix
@@ -20,7 +20,7 @@ class Board
 		BOARD_ROWS.times { @matrix << Array.new(BOARD_COLUMNS) }
 
 		# Populate The Board with Agents
-		self.populate()
+		#self.populate()
 	end
 
 	# Fill in the board based on user input

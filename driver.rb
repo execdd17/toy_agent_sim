@@ -1,13 +1,18 @@
+#!/usr/bin/env ruby
+
 require './board.rb'
 require 'thread'
 
 class SimDriver
 
   NUM_ROUNDS = 100
+
   attr_reader :board
+  attr_writer :speed
 
 	def initialize
 		@board = Board.new
+    @speed = 0.25
 	end
 
 	# TODO: FIX the BUG where newly spawned agents might have a turn if they are placed
@@ -57,7 +62,7 @@ class SimDriver
           end
 
           options = nil
-          sleep(0.25)
+          sleep(@speed)
         end
       end
 
@@ -138,21 +143,24 @@ class SimDriver
 
 		options
 	end
-end	
+end
 
-#####################################################################################################################
+###############################################################################
 # Shoes GUI Section - Creates And Manages all GUI Logic
-#####################################################################################################################
+###############################################################################
 Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
-          :height => (Board::BOARD_ROWS * 110),
+          :height => (Board::BOARD_ROWS * 114),
           :title  => "Calm Wolves vs. Nervous Sheep" do
 
   driver     = SimDriver.new
-	matrix     = driver.board.matrix
-  image_base = "images/"
+  matrix     = driver.board.matrix
 
-	# images to use
-	sheep_left, sheep_right = image_base + "sheep_left.jpg", image_base + "sheep_right.jpg"
+  # Thread Mutex
+  semaphore = Mutex.new
+
+  # images to use
+  image_base              = "images/"
+  sheep_left, sheep_right = image_base + "sheep_left.jpg", image_base + "sheep_right.jpg"
 	wolf_left, wolf_right   = image_base + "wolf_left.jpg", image_base + "wolf_right.jpg"
 
   wolf_pics   = [wolf_right]   # only using one pic for this (change if desired)
@@ -161,14 +169,35 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
 	taz1,taz2   = image_base + "taz1.jpg", image_base + "taz2.jpg"
 	desert      = image_base + "desert.jpg"
 
-	# Thread Mutex
-	semaphore = Mutex.new
-
-	# This 2-D Array represents all the flows and stacks that map naturally to the matrix
-	slots = []
-  Board::BOARD_ROWS.times { slots << Array.new(Board::BOARD_COLUMNS) }
-	
 	background white
+
+  flow :width => 1.0, :height => 40 do
+      para "Speed: "
+
+      #TODO: make GUI show the correct starting slider value
+      slider :default => 0.25 do |s|
+        driver.speed= (s.fraction == 0.0 ? 0.01 : s.fraction)
+      end
+
+      #TODO: Actually use this
+      para "Number of rounds: "#, :margin => [10, 0, 0, 0]
+      el = edit_line :width => 50
+      el.text= SimDriver::NUM_ROUNDS.to_s
+
+      para "Amount of sheep: "
+      num_sheep  = list_box :items => %w{Low Medium High}, :choose => "Medium", :width => 90
+
+      para "Amount of wolves: "
+      num_wolves = list_box :items => %w{Low Medium High}, :choose => "Low", :width => 90
+
+      button "Start", :width => 188, :margin => [10, 0, 0, 0] do
+        driver.board.populate(Board.const_get(num_sheep.upcase), Board.const_get(num_wolves.upcase))
+      end
+  end
+
+  # This 2-D Array represents all the flows and stacks that map naturally to the matrix
+  slots = []
+  Board::BOARD_ROWS.times { slots << Array.new(Board::BOARD_COLUMNS) }
 
 	# Do the initialize drawing on the board and crate the slot array that we will loop through later
   (0...Board::BOARD_ROWS).each do |row|
@@ -186,7 +215,7 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
       slots[row][col] = s
 			end
 		end
-	end
+  end
 
 	# Call the driver in a new thread so we don't have to wait for it to finish executing (which defeats the whole purpose)
 	Thread.new { driver.run_sim }
