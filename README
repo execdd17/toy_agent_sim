@@ -1,0 +1,16 @@
+Calm Wolves vs. Nervous Sheep
+------------------------------
+
+Summary:
+
+This is a toy example of an agent based simulation involving sheep, wolves, and grass. 
+
+Usage:
+
+To launch the shoes GUI, navigate to the bin directory and pic your poison.
+
+Requirements:
+
+Ruby >= 1.9.2
+
+

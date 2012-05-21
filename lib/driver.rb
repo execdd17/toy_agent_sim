@@ -11,7 +11,7 @@ class SimDriver
 
 	def initialize
 		@board = Board.new
-    @speed = 0.25
+    @speed = 1.0
     @num_rounds = 100
 	end
 
@@ -179,11 +179,11 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
     para "Speed: "
 
     #TODO: make GUI show the correct starting slider value
-    slider :default => 0.25 do |s|
-      driver.speed= (s.fraction == 0.0 ? 0.01 : s.fraction)
+    slider do |s|
+      driver.speed= [1.0 - s.fraction, 0.005].max
     end
 
-    para "Number of rounds: "#, :margin => [10, 0, 0, 0]
+    para "Number of rounds: "
     el = edit_line :width => 50
     el.text= driver.num_rounds.to_s
 
