@@ -25,49 +25,51 @@ class Board
 
 	# Fill in the board based on user input
 	def populate(sheep=MEDIUM,wolves=LOW)
-		totalGridSize = BOARD_ROWS * BOARD_COLUMNS
+		total_grid_size = BOARD_ROWS * BOARD_COLUMNS
 
     num_sheep, num_wolves = [sheep, wolves].map do |e|
       case e
-        when LOW    then totalGridSize / 12
-        when MEDIUM then totalGridSize / 6
-        when HIGH   then totalGridSize / 3
+        when LOW    then total_grid_size / 12
+        when MEDIUM then total_grid_size / 6
+        when HIGH   then total_grid_size / 3
       end
     end
 
 		place_agents(:Sheep, num_sheep)
     place_agents(:Wolf,  num_wolves)
-    self.growGrass()
+    self.grow_grass()
 	end
 
-	def growGrass()
-		emptySpaces = numEmptySpaces()
+	def grow_grass()
+		empty_spaces = num_empty_spaces()
 
 		# Regen between 2/5 amd 3/5 of the free space with grass
-		numGrass  = emptySpaces*(1.0/5.0) + rand((2.0/5.0)*emptySpaces)
-    numGrass  = numGrass.to_i
+		empty_spaces  = empty_spaces*(1.0/5.0) + rand((2.0/5.0)*empty_spaces)
+    empty_spaces  = empty_spaces.to_i
 
-		# Keep Putting more grass in the board until there is no room or numGrass is met
-		while numGrass > 0 and self.isSpace?
+		# Keep Putting more grass in the board until there is no room or emptySpaces is met
+		while empty_spaces > 0 and self.is_space?
 			i = rand(BOARD_ROWS)
 			j = rand(BOARD_COLUMNS)
-			numGrass -= 1 and @matrix[i][j] = :Grass unless @matrix[i][j]
+			empty_spaces -= 1 and @matrix[i][j] = :Grass unless @matrix[i][j]
 		end
 	end
 
-	def numEmptySpaces
+	def num_empty_spaces
 		num = 0
 		@matrix.each { |list| list.each { |object| num+=1 if not object } }
 		num
 	end
 
-	# Check if there is space to put the grass
-	def isSpace?()
-		@matrix.each { |list| list.each { |item| if not item then isSpace = true end } }
+	# Check if there is space to put the grass; note that grass is placed on nil spaces
+	def is_space?()
+		@matrix.any? do |list|
+      list.any? { |item| item }
+    end
 	end
 
 	# Nice Text Representation of the entire board 
-	def printBoard()
+	def print_board()
 		oneCol = 24
 		totalChars = (oneCol * BOARD_COLUMNS) - (BOARD_COLUMNS-1)
 		puts "-" * totalChars

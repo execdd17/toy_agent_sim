@@ -14,31 +14,31 @@ class SimDriver
 	# higher than [i][j]. Either all new agents should get a move or none of them should
 	# it's probably easier to implement none do by storing all the agents in a round and 
 	# then checking to see if the agent you're about to move is in that original list.
-	def runSim()
+	def run_sim()
 		processed = []
 
     (0...NUM_ROUNDS).each do |round|
       puts "Round #{round}"
       (0...Board::BOARD_ROWS).each do |i|
         (0...Board::BOARD_COLUMNS).each do |j|
-          gridObject = @board.matrix[i][j]
-          next if not gridObject
+          grid_object = @board.matrix[i][j]
+          next if not grid_object
 
-          if processed.index(gridObject) then
+          if processed.index(grid_object) then
             next
           else
-            processed << gridObject
+            processed << grid_object
           end
 
-          options = getMoveOptions(i,j,@board.matrix)
+          options = get_move_options(i,j,@board.matrix)
 
-          calcMoveMeth = case gridObject
-            when Sheep, Wolf then gridObject.method(:evaluateMoves)
+          calc_move_meth = case grid_object
+            when Sheep, Wolf then grid_object.method(:evaluate_moves)
           end
 
           # Make sure we only invoke methods
-          if Method === calcMoveMeth then
-            result = calcMoveMeth.call(options)
+          if Method === calc_move_meth then
+            result = calc_move_meth.call(options)
 
           # Check if we should move or delete the object
           result == :delete ? delete(@board.matrix,i,j) : move(@board.matrix,i,j,result)
@@ -48,10 +48,10 @@ class SimDriver
           # the agent started NOT where it was moved. That doesn't really make sense,
           # but I didn't bother to address it.
           # TODO: Fix that...
-          spawnAgents(gridObject.class,i,j) if gridObject.method(:readyToReproduce?).call
+          spawn_agents(grid_object.class,i,j) if grid_object.method(:ready_to_reproduce?).call
 
           # Decrement the agent's life
-          gridObject.current_life=(gridObject.current_life-1)
+          grid_object.current_life=(grid_object.current_life-1)
           else
             next
           end
@@ -61,18 +61,18 @@ class SimDriver
         end
       end
 
-      @board.growGrass()
+      @board.grow_grass()
       processed = []
     end
 	end
 
 	# In order to spawn new agents of the same type "agent", I call getEmptyLocations 
 	# to determine which nearby cells can be populated with it. 
-	def spawnAgents(agent,row,col)
+	def spawn_agents(agent,row,col)
     board = @board.matrix
-		return nil unless nearbyFree = self.getEmptyLocations(row,col,board)
+		return nil unless nearby_free = self.get_empty_locations(row,col,board)
 
-		nearbyFree.each do |direction|
+		nearby_free.each do |direction|
 			case direction
         when :UP        then board[row-1][col] = agent.new
         when :DOWN      then board[row+1][col] = agent.new
@@ -86,20 +86,20 @@ class SimDriver
 	# adjacent to [i][j]. It uses getMoveOptions to eliminate illegal moves, and
 	# then searches through them to eliminate any directions with agents already
 	# in them.
-	def getEmptyLocations(i,j,board)
-		options = getMoveOptions(i,j,board)
+	def get_empty_locations(i,j,board)
+		options = get_move_options(i,j,board)
 		return nil unless options.length > 0
 
-		spawnLocations = []
+		calcMoveMeth = []
 		options.each do |option| 
 			case option[1]
 				when Sheep, Wolf then nil
 				else
-					spawnLocations << option[0]
+					calcMoveMeth << option[0]
 			end
 		end
 	
-		return spawnLocations	
+		calcMoveMeth
 	end
 
 	# Simple delete method to clear a space on the board
@@ -122,7 +122,7 @@ class SimDriver
 		board[row][col] = nil
 	end
 
-	def getMoveOptions(row,column,board)
+	def get_move_options(row,column,board)
 		options = {}
 
 		# Look UP, DOWN, LEFT, RIGHT and add to array if valid
@@ -136,7 +136,7 @@ class SimDriver
 		(column-1 < 0			          ? true : false) ? nil : (options[:LEFT]  = board[row][column-1])
 		(column+1 > board.length-1	? true : false) ? nil : (options[:RIGHT] = board[row][column+1])
 
-		return options
+		options
 	end
 end	
 
@@ -147,34 +147,26 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
           :height => (Board::BOARD_ROWS * 110),
           :title  => "Calm Wolves vs. Nervous Sheep" do
 
-	@driver = SimDriver.new
-	@matrix = @driver.board.matrix
-
+  driver     = SimDriver.new
+	matrix     = driver.board.matrix
   image_base = "images/"
 
-	# Sheep pictures and array to hold them
+	# images to use
 	sheep_left, sheep_right = image_base + "sheep_left.jpg", image_base + "sheep_right.jpg"
-	@sheep_pics = [sheep_left, sheep_right]
-
-	# Wolf pictures and array to hold them
 	wolf_left, wolf_right   = image_base + "wolf_left.jpg", image_base + "wolf_right.jpg"
-	@wolf_pics = [wolf_right]   # only using one pic for this (change if desired)
 
-	# Grass pictures
-	@grass = image_base + "small_grass2.jpg"
-
-	# Taz pics used for when a wolf eats a sheep
-	@taz1,@taz2 = image_base + "taz1.jpg", image_base + "taz2.jpg"
-
-	# Cartoon pictures of the desert
-	@desert = image_base + "desert.jpg"
+  wolf_pics   = [wolf_right]   # only using one pic for this (change if desired)
+  sheep_pics  = [sheep_left, sheep_right]
+  grass       = image_base + "small_grass2.jpg"
+	taz1,taz2   = image_base + "taz1.jpg", image_base + "taz2.jpg"
+	desert      = image_base + "desert.jpg"
 
 	# Thread Mutex
-	@semaphore = Mutex.new
-	
+	semaphore = Mutex.new
+
 	# This 2-D Array represents all the flows and stacks that map naturally to the matrix
-	@slots = []
-  Board::BOARD_ROWS.times { @slots << Array.new(Board::BOARD_COLUMNS) }
+	slots = []
+  Board::BOARD_ROWS.times { slots << Array.new(Board::BOARD_COLUMNS) }
 	
 	background white
 
@@ -183,21 +175,21 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
 		flow :width => (Board::BOARD_COLUMNS * 155), :margin => 10 do
       (0...Board::BOARD_COLUMNS).each do |col|
         s = stack :width => 1.0/Board::BOARD_COLUMNS do
-          case @matrix[row][col]
-            when Sheep  then (image @sheep_pics[rand(@sheep_pics.length)])
-            when :Grass then (image @grass)
-            when Wolf   then (image @wolf_pics[rand(@wolf_pics.length)])
-            when nil    then (image @desert)
+          case matrix[row][col]
+            when Sheep  then (image sheep_pics[rand(sheep_pics.length)])
+            when :Grass then (image grass)
+            when Wolf   then (image wolf_pics[rand(wolf_pics.length)])
+            when nil    then (image desert)
           end
         end
 
-      @slots[row][col] = s
+      slots[row][col] = s
 			end
 		end
 	end
 
 	# Call the driver in a new thread so we don't have to wait for it to finish executing (which defeats the whole purpose)
-	Thread.new { @driver.runSim }
+	Thread.new { driver.run_sim }
 
 	# Call this routine every (1 second)/(animate argument)
 	# It will go through all the slots over and over again redrawing the background based on the matrix
@@ -206,37 +198,37 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
 	animate(4) do |frame|
 		(0...Board::BOARD_ROWS).each do |row|
 			(0...Board::BOARD_COLUMNS).each do |col|	#col represents a stack
-				gridObject = @matrix[row][col]
-				case gridObject
+				grid_object = matrix[row][col]
+				case grid_object
 					when nil    then 
-						@semaphore.synchronize {
-							@slots[row][col].clear { (image @desert) }
+						semaphore.synchronize {
+							slots[row][col].clear { (image desert) }
 						}
 					when :Grass then 
-						@semaphore.synchronize {
-							@slots[row][col].clear { (image @grass) }
+						semaphore.synchronize {
+							slots[row][col].clear { (image grass) }
 						}
 					when Sheep  then 
-						@semaphore.synchronize {
-							@slots[row][col].clear { (image @sheep_pics[rand(@sheep_pics.length)]) }
+						semaphore.synchronize {
+							slots[row][col].clear { (image sheep_pics[rand(sheep_pics.length)]) }
 						}
 					when Wolf   then 
-						if gridObject.animate? then
+						if grid_object.animate? then
 							Thread.new {
 								(0...2).each do
-									@semaphore.synchronize { 
-										@slots[row][col].clear { (image @taz1) }
+									semaphore.synchronize {
+										slots[row][col].clear { (image taz1) }
 									}
 									sleep 0.20
-									@semaphore.synchronize {
-										@slots[row][col].clear { (image @taz2) } 
+									semaphore.synchronize {
+										slots[row][col].clear { (image taz2) }
 									}
 								end
 							}
-							gridObject.animate=false
+							grid_object.animate=false
 						else
-							@semaphore.synchronize { 
-								@slots[row][col].clear { (image @wolf_pics[rand(@wolf_pics.length)])  }
+							semaphore.synchronize {
+								slots[row][col].clear { (image wolf_pics[rand(wolf_pics.length)])  }
 							}
 						end
 				end

@@ -29,13 +29,13 @@ class Wolf
 
 	# if it's ready to animate the wolf eating the sheep
 	def animate?
-		return @animate
+		@animate
 	end
 
   # Determine what move is best. First loop looks for sheep and returns if found
   # second loop returns anything that isn't another wolf
   # last return statement handles the case where there is no move to make
-	def evaluateMoves(options)
+	def evaluate_moves(options)
    	
 		# Check to see if the wolf has enough in him to carry on!	
 		return :delete if @current_life == 0
@@ -60,7 +60,7 @@ class Wolf
     sensible_moves.length == 0 ? nil : sensible_moves[rand(sensible_moves.length)]
   end
 
-	def readyToReproduce?()
+	def ready_to_reproduce?()
 		ready = REQUIRED_TO_REPRODUCE == @current_consumed
 		ready ? (@current_consumed = 0 and true) : false
 	end

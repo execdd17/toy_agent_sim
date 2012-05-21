@@ -25,7 +25,7 @@ class Sheep
 
 	# Determine what the consequences are of that move
 	# For example, is there grass on that space? is there a wolf?
-	def evaluateMoves(options)
+	def evaluate_moves(options)
 		
 		# Check to see if the wolf has enough in him to carry on!       
 		return :delete if @current_life == 0
@@ -49,7 +49,7 @@ class Sheep
     sensible_moves.length == 0 ? nil : sensible_moves[rand(sensible_moves.length)]
 	end
 
-  def readyToReproduce?()
+  def ready_to_reproduce?()
     ready = REQUIRED_TO_REPRODUCE == @current_consumed
     ready ? (@current_consumed = 0 and true) : false
   end
