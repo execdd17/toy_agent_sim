@@ -7,16 +7,16 @@
 =end
 class Sheep
 
-	# The idea of energy might be interesting to implement
-	# For now, let's assume that everything can move if it
-	# has the desire to
-	TOTAL_LIFE              = 3
-	REQUIRED_TO_REPRODUCE   = 2
-	MOVE_COST               = 1
+  # The idea of energy might be interesting to implement
+  # For now, let's assume that everything can move if it
+  # has the desire to
+  TOTAL_LIFE              = 3
+  REQUIRED_TO_REPRODUCE   = 2
+  MOVE_COST               = 1
 
-	# The amount of life that the sheep currently has. This is decreased
+  # The amount of life that the sheep currently has. This is decreased
   # whenever an agent is processed
-	attr_accessor :current_life               
+  attr_accessor :current_life               
 	
   def initialize()
 		@current_life = TOTAL_LIFE
