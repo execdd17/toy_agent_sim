@@ -8,7 +8,7 @@ This is a toy example of an agent based simulation involving sheep, wolves, and 
 Usage:
 
 - Download shoes version 3.1: http://shoesrb.com/downloads
-- Start shoes, and execute lib/driver.rb (in my project) from within it
+- Start shoes, and execute lib/shoes_gui.rb (in my project) from within it
 
 Requirements:
 
