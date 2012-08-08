@@ -19,35 +19,35 @@ class Sheep
   attr_accessor :current_life               
 	
   def initialize()
-		@current_life = TOTAL_LIFE
+    @current_life     = TOTAL_LIFE
     @current_consumed = 0   # the amount of grass eaten
-	end
+  end
 
-	# Determine what the consequences are of that move
-	# For example, is there grass on that space? is there a wolf?
-	def evaluate_moves(options)
-		
-		# Check to see if the wolf has enough in him to carry on!       
-		return :delete if @current_life == 0
+  # Determine what the consequences are of that move
+  # For example, is there grass on that space? is there a wolf?
+  def evaluate_moves(options)
 
-   	sensible_moves = []
+    # Check to see if the wolf has enough in him to carry on!       
+    return :delete if @current_life == 0
 
-		# Check if there is  any grass nearby and return one at random if there are some
-		options.each { |move| sensible_moves << move[0] if :Grass  == move[1]}
-		result = sensible_moves.length == 0 ? nil : sensible_moves[rand(sensible_moves.length)]
-    
-		if result then
+    sensible_moves = []
+
+    # Check if there is  any grass nearby and return one at random if there are some
+    options.each { |move| sensible_moves << move[0] if :Grass  == move[1]}
+    result = sensible_moves.length == 0 ? nil : sensible_moves[rand(sensible_moves.length)]
+
+    if result then
       @current_consumed += 1
-			@current_life += 1	# give them a little extra survivability
+      @current_life += 1	# give them a little extra survivability
       return result
     end
-    
+
     # Add moves that will not lead to certain death or occupied by sheep already to array
-		options.each { |move| sensible_moves << move[0] if not Sheep === move[1] and not Wolf === move[1] }
-    
+    options.each { |move| sensible_moves << move[0] if not Sheep === move[1] and not Wolf === move[1] }
+
     # Return a random move in the array or nil of array is empty
     sensible_moves.length == 0 ? nil : sensible_moves[rand(sensible_moves.length)]
-	end
+  end
 
   def ready_to_reproduce?()
     ready = REQUIRED_TO_REPRODUCE == @current_consumed
