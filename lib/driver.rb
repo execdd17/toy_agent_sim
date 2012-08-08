@@ -165,7 +165,7 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
   semaphore = Mutex.new
 
   # images to use
-  image_base              = "images/"
+  image_base              = "../images/"
   sheep_left, sheep_right = image_base + "sheep_left.jpg", image_base + "sheep_right.jpg"
 	wolf_left, wolf_right   = image_base + "wolf_left.jpg", image_base + "wolf_right.jpg"
 
@@ -180,7 +180,6 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
   flow :width => 1.0, :height => 40 do
     para "Speed: "
 
-    #TODO: make GUI show the correct starting slider value
     slider do |s|
       driver.speed= [1.0 - s.fraction, 0.005].max
     end
@@ -195,7 +194,7 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
     para "Amount of wolves: "
     wolf_lb = list_box :items => %w{Low Medium High}, :choose => "Low", :width => 90
 
-    button "Start", :width => 188, :margin => [10, 0, 0, 0] do
+    button "Start", :width => 150, :margin => [10, 0, 0, 0] do
       amount_sheep, amount_wolves = sheep_lb.text.upcase, wolf_lb.text.upcase
       driver.populate_board(Board.const_get(amount_sheep), Board.const_get(amount_wolves))
       driver.num_rounds= el.text.to_i
@@ -204,7 +203,8 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
       slots = []
       Board::BOARD_ROWS.times { slots << Array.new(Board::BOARD_COLUMNS) }
 
-      # Do the initialize drawing on the board and crate the slot array that we will loop through later
+      # Do the initialize drawing on the board ane crate the slot array
+      # that we will loop through later
       (0...Board::BOARD_ROWS).each do |row|
         flow :width => (Board::BOARD_COLUMNS * 155), :margin => 10 do
           (0...Board::BOARD_COLUMNS).each do |col|
@@ -222,7 +222,8 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
         end
       end
 
-      # Call the driver in a new thread so we don't have to wait for it to finish executing (which defeats the whole purpose)
+      # Call the driver in a new thread so we don't have to wait for it to finish
+      # executing (which defeats the whole purpose)
       Thread.new { driver.run_sim }
 
       # Call this routine every (1 second)/(animate argument)
