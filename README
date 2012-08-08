@@ -7,7 +7,8 @@ This is a toy example of an agent based simulation involving sheep, wolves, and 
 
 Usage:
 
-To launch the shoes GUI, navigate to the bin directory and pic your poison.
+- Download shoes version 3.1: http://shoesrb.com/downloads
+- Start shoes, and execute lib/driver.rb (in my project) from within it
 
 Requirements:
 
