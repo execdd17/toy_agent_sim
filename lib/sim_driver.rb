@@ -51,7 +51,10 @@ class SimDriver
             # the agent started NOT where it was moved. That doesn't really make sense,
             # but I didn't bother to address it.
             # TODO: Fix that...
-            spawn_agents(grid_object.class,i,j) if grid_object.method(:ready_to_reproduce?).call
+            if grid_object.ready_to_reproduce?
+              grid_object.reset_food_consumption
+              spawn_agents(grid_object.class,i,j) 
+            end
 
             # Decrement the agent's life
             grid_object.current_life=(grid_object.current_life-1)
