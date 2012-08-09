@@ -93,28 +93,27 @@ class SimDriver
   end
 
   # This will return a list of directions corresponding to empty cell locations
-  # adjacent to [i][j]. It uses getMoveOptions to eliminate illegal moves, and
+  # adjacent to [row][col]. It uses getMoveOptions to eliminate illegal moves, and
   # then searches through them to eliminate any directions with agents already
   # in them.
-  def get_empty_locations(i,j,board)
-    options = get_move_options(i,j,board)
+  def get_empty_locations(row,col,board)
+    options = get_move_options(row,col,board)
     return nil unless options.length > 0
 
-    calcMoveMeth = []
-    options.each do |option| 
+    options.inject(Array.new) do |memo, option| 
       case option[1]
         when Sheep, Wolf then nil
       else
-        calcMoveMeth << option[0]
+        memo << option[0]
       end
-    end
 
-    calcMoveMeth
+      memo
+    end
   end
 
   # Simple delete method to clear a space on the board
-  def delete(board,i,j)
-    board[i][j] = nil
+  def delete(board,row,col)
+    board[row][col] = nil
   end
 
   # Moves a specified agent to another location then clears its former location	
