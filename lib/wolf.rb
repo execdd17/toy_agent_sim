@@ -1,13 +1,6 @@
 require './agent'
 require './sheep'
 
-=begin
- This Class Represents the Wolf Agent in an Agent Based Simulation.
- I would like this agent to interact with other wolves, grass, and sheep
-
- Written By:
- Alexander Vanadio
-=end
 class Wolf < Agent
         
   TOTAL_LIFE   		        = 4
@@ -16,7 +9,7 @@ class Wolf < Agent
   FOOD_TYPES              = [Sheep]
   SAFE_TYPES              = [:Grass, nil]
 
-  # Indicator of when animation should be done (when the wolf eats a sheep)
+  # the animation flag for when a wolf eats a sheep
   attr_writer :animate
 
   def initialize
@@ -24,7 +17,6 @@ class Wolf < Agent
     @animate = false
   end
 
-  # used to animate wolf eating sheep in shoes
   def animate?
     @animate
   end

@@ -1,13 +1,6 @@
 require './agent'
 require './wolf'
 
-=begin
- This Class Represents the Sheep Agent in an Agent Based Simulation.
- I would like this agent to interact with other sheep, grass, and wolves
-
- Written By:
- Alexander Vanadio
-=end
 class Sheep < Agent
 
   TOTAL_LIFE              = 3

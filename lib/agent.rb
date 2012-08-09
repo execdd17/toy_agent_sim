@@ -1,7 +1,7 @@
 class Agent
 
   # The amount of life that the wolf currently has. This is decreased 
-  # whenever an agent is processed
+  # after each round
   attr_accessor :current_life
 
   def initialize
@@ -13,8 +13,7 @@ class Agent
     self.class::REQUIRED_TO_REPRODUCE <= @current_consumed
   end
   
-  # Determine what the consequences are of that move
-  # For example, is there grass on that space? is there a wolf?
+  # organizes possible moves that an agent can take and picks the best one
   def evaluate_moves_helper(options)
 
     return :delete unless alive?
@@ -27,6 +26,8 @@ class Agent
       sensible_moves[:safe] << move[0] if self.class::SAFE_TYPES.any? { |type| type  === move[1] }
     end
 
+    # the agent prefers to move when possible, choosing food first and then non-food;
+    # the agent will choose to do nothing if that is the only safe option
     if sensible_moves[:food].size > 0 then
       @current_consumed     += 1
       @current_life         += 1
