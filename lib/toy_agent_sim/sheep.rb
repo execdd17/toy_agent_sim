@@ -1,7 +1,5 @@
-require './agent'
-require './wolf'
-
-class Sheep < Agent
+class ToyAgentSim::Sheep < ToyAgentSim::Agent
+  include ToyAgentSim
 
   TOTAL_LIFE              = 3
   REQUIRED_TO_REPRODUCE   = 2

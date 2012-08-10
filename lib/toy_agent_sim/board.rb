@@ -1,7 +1,5 @@
-require "./wolf.rb"
-require "./sheep.rb"
-
-class Board
+class ToyAgentSim::Board
+  include ToyAgentSim
 
   # Amount of Sheep or Wolves
   LOW,MEDIUM,HIGH = 0,1,2

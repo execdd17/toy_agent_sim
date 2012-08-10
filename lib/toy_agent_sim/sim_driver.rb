@@ -1,7 +1,7 @@
-require './board.rb'
 require 'thread'
 
-class SimDriver
+class ToyAgentSim::SimDriver
+  include ToyAgentSim
 
   attr_reader   :board
   attr_writer   :speed

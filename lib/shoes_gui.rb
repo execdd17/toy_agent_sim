@@ -1,4 +1,5 @@
-require "./sim_driver"
+require "./toy_agent_sim"
+include ToyAgentSim
 
 Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
           :height => (Board::BOARD_ROWS * 114),

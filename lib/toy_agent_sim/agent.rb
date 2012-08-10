@@ -1,4 +1,5 @@
-class Agent
+class ToyAgentSim::Agent
+  include ToyAgentSim
 
   def initialize
     @current_consumed = 0
