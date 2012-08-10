@@ -57,10 +57,10 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
           (0...Board::BOARD_COLUMNS).each do |col|
             s = stack :width => 1.0/Board::BOARD_COLUMNS do
               case matrix[row][col]
-                when Sheep  then (image sheep_pics[rand(sheep_pics.length)])
-                when :Grass then (image grass)
-                when Wolf   then (image wolf_pics[rand(wolf_pics.length)])
-                when nil    then (image desert)
+                when Sheep  then image sheep_pics.random
+                when :Grass then image grass
+                when Wolf   then image wolf_pics.random
+                when nil    then image desert
               end
             end
 
@@ -84,33 +84,33 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
             case grid_object
               when nil    then
                 semaphore.synchronize {
-                  slots[row][col].clear { (image desert) }
+                  slots[row][col].clear { image desert }
                 }
               when :Grass then
                 semaphore.synchronize {
-                  slots[row][col].clear { (image grass) }
+                  slots[row][col].clear { image grass }
                 }
               when Sheep  then
                 semaphore.synchronize {
-                  slots[row][col].clear { (image sheep_pics[rand(sheep_pics.length)]) }
+                  slots[row][col].clear { image sheep_pics.sample }
                 }
               when Wolf   then
                 if grid_object.animate? then
                   Thread.new {
                     (0...2).each do
                       semaphore.synchronize {
-                        slots[row][col].clear { (image taz1) }
+                        slots[row][col].clear { image taz1 }
                       }
                       sleep 0.20
                       semaphore.synchronize {
-                        slots[row][col].clear { (image taz2) }
+                        slots[row][col].clear { image taz2 }
                       }
                     end
                   }
                   grid_object.animate=false
                 else
                   semaphore.synchronize {
-                    slots[row][col].clear { (image wolf_pics[rand(wolf_pics.length)])  }
+                    slots[row][col].clear { image wolf_pics.sample  }
                   }
                 end
             end
