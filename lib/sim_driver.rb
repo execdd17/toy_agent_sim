@@ -25,26 +25,16 @@ class SimDriver
       (0...Board::BOARD_ROWS).each do |i|
         (0...Board::BOARD_COLUMNS).each do |j|
           grid_object = @board.matrix[i][j]
-          next if not grid_object
+          next if grid_object.nil? or grid_object == :Grass
 
-          #TODO If I am going in order from 0 to n, then why bother keeping track
-          # of what I've processed?
-          if processed.index(grid_object) then
-            next
-          else
-            processed << grid_object
-          end
+          # do not process the same agent twice; this happens when an agent
+          # moves down (to the next row) and maybe other cases
+          processed.include?(grid_object) ? next : processed << grid_object
 
           options = @board.get_move_options(i,j)
 
-          #TODO: Change this to a simple Object#respond_to?
-          calc_move_meth = case grid_object
-            when Sheep, Wolf then grid_object.method(:evaluate_moves)
-          end
-
-          # Make sure we only invoke methods
-          if Method === calc_move_meth then
-            result = calc_move_meth.call(options)
+          if grid_object.respond_to?(:evaluate_moves) then
+            result = grid_object.evaluate_moves(options)
 
             # Check if we should move or delete the object
             result == :delete ? @board.delete(i,j) : move(@board.matrix,i,j,result)
@@ -59,8 +49,7 @@ class SimDriver
               @board.spawn_agents(grid_object.class,i,j) 
             end
 
-            # Decrement the agent's life
-            grid_object.current_life=(grid_object.current_life-1)
+            grid_object.decrement_life
           else
             next
           end

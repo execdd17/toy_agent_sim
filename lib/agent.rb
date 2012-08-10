@@ -1,9 +1,5 @@
 class Agent
 
-  # The amount of life that the wolf currently has. This is decreased 
-  # after each round
-  attr_accessor :current_life
-
   def initialize
     @current_consumed = 0
     @current_life     = self.class::TOTAL_LIFE
@@ -43,11 +39,17 @@ class Agent
     selected_move
   end
 
-  def alive?
-    @current_life > 0
+  def decrement_life(amount=1)
+    @current_life -=amount
   end
 
   def reset_food_consumption
     @current_consumed = 0
+  end
+
+  private
+
+  def alive?
+    @current_life > 0
   end
 end
