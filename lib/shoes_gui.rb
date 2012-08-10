@@ -1,8 +1,5 @@
 require "./sim_driver"
 
-###############################################################################
-# Shoes GUI Section - Creates And Manages all GUI Logic
-###############################################################################
 Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
           :height => (Board::BOARD_ROWS * 114),
           :title  => "Calm Wolves vs. Nervous Sheep" do

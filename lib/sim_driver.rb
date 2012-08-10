@@ -27,14 +27,17 @@ class SimDriver
           grid_object = @board.matrix[i][j]
           next if not grid_object
 
+          #TODO If I am going in order from 0 to n, then why bother keeping track
+          # of what I've processed?
           if processed.index(grid_object) then
             next
           else
             processed << grid_object
           end
 
-          options = get_move_options(i,j,@board.matrix)
+          options = @board.get_move_options(i,j)
 
+          #TODO: Change this to a simple Object#respond_to?
           calc_move_meth = case grid_object
             when Sheep, Wolf then grid_object.method(:evaluate_moves)
           end
@@ -44,7 +47,7 @@ class SimDriver
             result = calc_move_meth.call(options)
 
             # Check if we should move or delete the object
-            result == :delete ? delete(@board.matrix,i,j) : move(@board.matrix,i,j,result)
+            result == :delete ? @board.delete(i,j) : move(@board.matrix,i,j,result)
 
             # Check if the agent is ready to reproduce and handle accordingly
             # NOTE: It is important to understand that the base spawn address is where
@@ -53,7 +56,7 @@ class SimDriver
             # TODO: Fix that...
             if grid_object.ready_to_reproduce?
               grid_object.reset_food_consumption
-              spawn_agents(grid_object.class,i,j) 
+              @board.spawn_agents(grid_object.class,i,j) 
             end
 
             # Decrement the agent's life
@@ -76,46 +79,6 @@ class SimDriver
     @board.populate(*args)
   end
 
-  # In order to spawn new agents of the same type "agent", I call getEmptyLocations 
-  # to determine which nearby cells can be populated with it. 
-  def spawn_agents(agent,row,col)
-    board = @board.matrix
-    return nil unless nearby_free = self.get_empty_locations(row,col,board)
-
-    nearby_free.each do |direction|
-      case direction
-        when :UP        then board[row-1][col] = agent.new
-        when :DOWN      then board[row+1][col] = agent.new
-        when :LEFT      then board[row][col-1] = agent.new
-        when :RIGHT     then board[row][col+1] = agent.new
-      end
-    end
-  end
-
-  # This will return a list of directions corresponding to empty cell locations
-  # adjacent to [row][col]. It uses getMoveOptions to eliminate illegal moves, and
-  # then searches through them to eliminate any directions with agents already
-  # in them.
-  def get_empty_locations(row,col,board)
-    options = get_move_options(row,col,board)
-    return nil unless options.length > 0
-
-    options.inject(Array.new) do |memo, option| 
-      case option[1]
-        when Sheep, Wolf then nil
-      else
-        memo << option[0]
-      end
-
-      memo
-    end
-  end
-
-  # Simple delete method to clear a space on the board
-  def delete(board,row,col)
-    board[row][col] = nil
-  end
-
   # Moves a specified agent to another location then clears its former location	
   def move(board, row, col, direction)
 
@@ -129,24 +92,5 @@ class SimDriver
     end
 
     board[row][col] = nil
-  end
-
-  def get_move_options(row,column,board)
-    options = {}
-
-    # Look UP, DOWN, LEFT, RIGHT and add to array if valid
-    # NOTE: Think of it as.. Is it illegal? True or False; the -1 offset is important
-    # If False add to hash array if true return nil
-    # I'm indexing into a 2x2 array, for example, 
-    # so a.length == a[0].length == a[1].length == 2 BUT
-    # I need to see if it's greater than 1, for example, because 
-    # that is the highest index (not 2)
-    # I could have a just used >= and <= too
-    (row-1    < 0              	? true : false) ? nil : (options[:UP]    = board[row-1][column])
-    (row+1    > board.length-1  ? true : false) ? nil : (options[:DOWN]  = board[row+1][column])
-    (column-1 < 0			          ? true : false) ? nil : (options[:LEFT]  = board[row][column-1])
-    (column+1 > board.length-1	? true : false) ? nil : (options[:RIGHT] = board[row][column+1])
-
-    options
   end
 end
