@@ -5,25 +5,32 @@ class ToyAgentSim::SimDriver
 
   attr_reader   :board
   attr_writer   :speed
+  attr_writer   :continue_running
   attr_accessor :num_rounds
 
   def initialize
-    @board = Board.new
-    @speed = 1.0
-    @num_rounds = 100
+    @board            = Board.new
+    @speed            = 1.0
+    @num_rounds       = 100
+    @continue_running = false
+    @started          = false
   end
 
   # TODO: FIX the BUG where newly spawned agents might have a turn if they are placed
   # higher than [i][j]. Either all new agents should get a move or none of them should
   # it's probably easier to implement none do by storing all the agents in a round and 
   # then checking to see if the agent you're about to move is in that original list.
-  def run_sim()
+  def run_sim
+    @continue_running = @started = true
     processed = []
 
     (0...@num_rounds).each do |round|
       puts "Round #{round}"
       (0...Board::BOARD_ROWS).each do |i|
         (0...Board::BOARD_COLUMNS).each do |j|
+
+          Thread.stop unless continue_running? 
+
           grid_object = @board.matrix[i][j]
           next if grid_object.nil? or grid_object == :Grass
 
@@ -81,5 +88,13 @@ class ToyAgentSim::SimDriver
     end
 
     board[row][col] = nil
+  end
+
+  def continue_running?
+    @continue_running
+  end
+
+  def started?
+    @started
   end
 end
