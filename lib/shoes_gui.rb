@@ -14,15 +14,15 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
   # images to use
   image_base              = "../images/"
   sheep_left, sheep_right = image_base + "sheep_left.jpg", image_base + "sheep_right.jpg"
-	wolf_left, wolf_right   = image_base + "wolf_left.jpg", image_base + "wolf_right.jpg"
+  wolf_left, wolf_right   = image_base + "wolf_left.jpg", image_base + "wolf_right.jpg"
 
   wolf_pics   = [wolf_right]   # only using one pic for this (change if desired)
   sheep_pics  = [sheep_left, sheep_right]
   grass       = image_base + "small_grass2.jpg"
-	taz1,taz2   = image_base + "taz1.jpg", image_base + "taz2.jpg"
-	desert      = image_base + "desert.jpg"
+  taz1,taz2   = image_base + "taz1.jpg", image_base + "taz2.jpg"
+  desert      = image_base + "desert.jpg"
 
-	background white
+  background white
 
   flow :width => 1.0, :height => 40 do
     para "Speed: "
