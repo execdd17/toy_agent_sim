@@ -57,9 +57,9 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 155),
           (0...Board::BOARD_COLUMNS).each do |col|
             s = stack :width => 1.0/Board::BOARD_COLUMNS do
               case matrix[row][col]
-                when Sheep  then image sheep_pics.random
+                when Sheep  then image sheep_pics.sample
                 when :Grass then image grass
-                when Wolf   then image wolf_pics.random
+                when Wolf   then image wolf_pics.sample
                 when nil    then image desert
               end
             end
