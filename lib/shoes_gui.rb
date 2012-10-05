@@ -27,7 +27,7 @@ Shoes.app :width  => (Board::BOARD_COLUMNS * 150),
   flow :width => 1.0, :height => 40 do
     
     para "Number of rounds: "
-    el = edit_line :width => 150
+    el = edit_line :width => 50
     el.text= driver.num_rounds.to_s
 
     para "Amount of sheep: "
