@@ -1,8 +1,6 @@
-## Summary
+## Summary ([video demo](http://execdd17.github.com/toy_agent_sim))
 
 This is a toy example of an agent based simulation involving sheep, wolves, and grass. 
-
-There is a video demo [here](http://execdd17.github.com/toy_agent_sim)
 
 ## Usage
 
