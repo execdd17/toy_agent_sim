@@ -1,18 +1,18 @@
-== Summary
+## Summary
 
 This is a toy example of an agent based simulation involving sheep, wolves, and grass. 
 
 There is a video demo [here](http://execdd17.github.com/toy_agent_sim)
 
-== Usage
+## Usage
 
-- Download shoes version 3.1: http://shoesrb.com/downloads
-- Start shoes, and execute lib/shoes_gui.rb (in my project) from within it
+* Download shoes version 3.1: http://shoesrb.com/downloads
+* Start shoes, and execute lib/shoes_gui.rb (in my project) from within it
 
-== Requirements
+## Requirements
 
 Ruby 1.9.3
 
-== Enhancements
+## Enhancements
 
 Please feel free to create an issue request for bugs or new features. 
